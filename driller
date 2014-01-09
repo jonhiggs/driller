@@ -64,9 +64,14 @@ function __git_dir() {
 function git_root() {
   dir=$1
   while ! __root_dir ${dir} && ! __git_dir ${dir}; do
-    echo ${dir} > /dev/stderr
     dir=$(__dirname ${dir}/../)
   done
+
+  if [[ ${dir} == "/" ]]; then
+    echo "Error: Git dir not found" > /dev/stderr
+    exit 1
+  fi
+
   echo ${dir}
 }
 

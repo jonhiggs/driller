@@ -85,11 +85,19 @@ function testGitRootSimpleDir() {
   assertEquals "stdout"         "/tmp/driller/2/"           "$(cat ${stdout})"
 }
 
-function testGitRootHitRoot() {
-  ../driller --git-root ${HOME}                             > ${stdout}
+function testGitRootSimpleFile() {
+  ../driller --git-root /tmp/driller/2/file                 > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/tmp/driller/2/"           "$(cat ${stdout})"
+}
+
+function testGitRootHitRoot() {
+  ../driller --git-root ${HOME}                             > ${stdout} 2> ${stderr}
+  status=$?
+  assertEquals "exit status"    "1"                         "${status}"
+  assertEquals "stderr"         "Error: Git dir not found"  "$(cat ${stderr})"
+  assertEquals "stdout"         ""                          "$(cat ${stdout})"
 }
 
 function oneTimeSetUp() {
@@ -99,6 +107,7 @@ function oneTimeSetUp() {
   touch    /tmp/driller/1/1/file
   mkdir -p /tmp/driller/2/1
   mkdir -p /tmp/driller/2/.git
+  touch    /tmp/driller/2/file
 }
 
 function oneTimeTearDown() {
