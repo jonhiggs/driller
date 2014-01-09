@@ -93,6 +93,6 @@ for arg in "$@"; do
     "--debug")                    debug                                     ;;
     "--help")                     usage                                     ;;
     "--absolute")                 echo ${PATH}                              ;;
-    "--git-root")                 git_root ${PATH}                          ;;
+    "--git-root")                 git_root ${DIR}                           ;;
   esac
 done
