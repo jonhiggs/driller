@@ -1,0 +1,33 @@
+#!/bin/bash
+
+function testHelp() {
+  ../driller --help                           > ${stdout}
+  status=$?
+  assertEquals "exit status"    "0"                         "${status}"
+  assertEquals "stdout"         "USAGE:"                    "$(head -n1 ${stdout})"
+}
+
+function testAbsoluteSimpleDir() {
+  ../driller --absolute /tmp/driller/test1    > ${stdout}
+  status=$?
+  assertEquals "exit status"    "0"                         "${status}"
+  assertEquals "stdout"         "/tmp/driller/test1"        "$(cat ${stdout})"
+}
+
+function oneTimeSetUp() {
+  stdout="/tmp/driller/stdout"
+  mkdir -p /tmp/driller/test1
+}
+
+function oneTimeTearDown() {
+  rm -Rf /tmp/driller
+}
+
+function TearDown() {
+  rm -Rf /tmp/driller/stdout
+}
+
+# load and run shUnit2
+source ./shunit/src/shunit2
+
+# vim: ai ts=2 sw=2 et sts=2 ft=sh

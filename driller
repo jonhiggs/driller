@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+function usage() {
+  cat <<EOF
+USAGE:
+  $(basename $0) [OPTION] <dir>
+
+OPTIONS:
+  --absolute                Provide the absolute path.
+  --git-root                Find the git root.
+  --help                    This help.
+
+EOF
+  exit 0
+}
+
+function find_path_in_arguments() {
+  for arg in "$@"; do
+    if ! [[ ${arg} =~ ^- ]]; then
+      dir=${arg}
+    fi
+  done
+  [[ -z ${dir} ]] && dir=$(pwd)
+  echo ${dir}
+}
+
+function absolute_dir() {
+  dir=$1
+  echo $dir
+}
+
+# find a file or directory in the arguments.
+
+DIR=$(find_path_in_arguments $@)
+
+for arg in "$@"; do
+  case "${arg}" in
+    "--help")                     usage                                     ;;
+    "--absolute")                 absolute_dir ${DIR}                       ;;
+  esac
+done
