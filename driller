@@ -36,7 +36,13 @@ function __dirname() {
   fi
 
   cd ${dir}
-  echo "$(pwd)/"
+  dir=$(pwd)
+  if ! [[ ${dir} =~ /$ ]]; then
+    dir="${dir}/"
+  fi
+
+  # compress // down to /
+  echo ${dir} | /usr/bin/sed 's#//#/#g'
 }
 
 function __filename() {
@@ -45,13 +51,23 @@ function __filename() {
   fi
 }
 
-function git_dir() {
+function __root_dir() {
+  [[ $(__dirname ${dir}) == "/" ]]
+  return $?
+}
+
+function __git_dir() {
   [[ -d "${dir}/.git" ]]
   return $?
 }
 
 function git_root() {
-  echo "todo"
+  dir=$1
+  while ! __root_dir ${dir} && ! __git_dir ${dir}; do
+    echo ${dir} > /dev/stderr
+    dir=$(__dirname ${dir}/../)
+  done
+  echo ${dir}
 }
 
 function debug() {

@@ -43,6 +43,27 @@ function testAbsoluteComplicatedDir() {
   assertEquals "stdout"         "/tmp/driller/1/"           "$(cat ${stdout})"
 }
 
+function testAbsoluteWeirdRoot1() {
+  ../driller --absolute //..//                              > ${stdout}
+  status=$?
+  assertEquals "exit status"    "0"                         "${status}"
+  assertEquals "stdout"         "/"                         "$(cat ${stdout})"
+}
+
+function testAbsoluteWeirdRoot2() {
+  ../driller --absolute //////                              > ${stdout}
+  status=$?
+  assertEquals "exit status"    "0"                         "${status}"
+  assertEquals "stdout"         "/"                         "$(cat ${stdout})"
+}
+
+function testAbsoluteWeirdRoot3() {
+  ../driller --absolute /./..///                            > ${stdout}
+  status=$?
+  assertEquals "exit status"    "0"                         "${status}"
+  assertEquals "stdout"         "/"                         "$(cat ${stdout})"
+}
+
 function testAbsoluteSimpleFile() {
   ../driller --absolute /tmp/driller/1/1/file               > ${stdout}
   status=$?
@@ -57,28 +78,27 @@ function testAbsoluteComplicatedFile() {
   assertEquals "stdout"         "/tmp/driller/1/1/file"     "$(cat ${stdout})"
 }
 
-function testAbsoluteNonExistant() {
-  file="/tmp/nowhere/../blah/abd"
-  ../driller --absolute ${file}                             > ${stdout} 2> ${stderr}
+function testGitRootSimpleDir() {
+  ../driller --git-root /tmp/driller/2/1                    > ${stdout}
   status=$?
-  assertEquals "exit status"    "1"                         "${status}"
-  assertEquals "stderr"         "Error: Path '${file}' not found" "$(cat ${stderr})"
-  assertEquals "stdout"         ""                          "$(cat ${stdout})"
+  assertEquals "exit status"    "0"                         "${status}"
+  assertEquals "stdout"         "/tmp/driller/2/"           "$(cat ${stdout})"
 }
 
-#function testGitRootSimpleDir() {
-#  ../driller --absolute /tmp/driller/2/1                    > ${stdout}
-#  status=$?
-#  assertEquals "exit status"    "0"                         "${status}"
-#  assertEquals "stdout"         "/tmp/driller/2/"           "$(cat ${stdout})"
-#}
+function testGitRootHitRoot() {
+  ../driller --git-root ${HOME}                             > ${stdout}
+  status=$?
+  assertEquals "exit status"    "0"                         "${status}"
+  assertEquals "stdout"         "/tmp/driller/2/"           "$(cat ${stdout})"
+}
 
 function oneTimeSetUp() {
   stdout="/tmp/driller/stdout"
   stderr="/tmp/driller/stderr"
   mkdir -p /tmp/driller/1/1
   touch    /tmp/driller/1/1/file
-  mkdir -p /tmp/driller/2
+  mkdir -p /tmp/driller/2/1
+  mkdir -p /tmp/driller/2/.git
 }
 
 function oneTimeTearDown() {
