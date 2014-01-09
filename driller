@@ -1,9 +1,9 @@
-#!/usr/bin/env bash
+#!/usr/bin/env bash -e
 
 function usage() {
-  cat <<EOF
+  /bin/cat <<EOF
 USAGE:
-  $(basename $0) [OPTION] <dir>
+  $(/usr/bin/basename $0) [OPTION] <dir>
 
 OPTIONS:
   --absolute                Provide the absolute path.
@@ -17,25 +17,61 @@ EOF
 function find_path_in_arguments() {
   for arg in "$@"; do
     if ! [[ ${arg} =~ ^- ]]; then
-      dir=${arg}
+      path=${arg}
     fi
   done
-  [[ -z ${dir} ]] && dir=$(pwd)
-  echo ${dir}
+  [[ -z ${path} ]] && path=$(pwd)
+  if [[ ! -d ${path} ]] && [[ ! -f ${path} ]]; then
+    echo "Error: Invalid path" > /dev/stderr
+    exit 1
+  fi
+  echo ${path}
 }
 
-function absolute_dir() {
-  dir=$1
-  echo $dir
+function __dirname() {
+  if [[ -f $1 ]]; then
+    dir=$(/usr/bin/dirname $1)
+  else
+    dir=$1
+  fi
+
+  cd ${dir}
+  echo "$(pwd)/"
 }
 
-# find a file or directory in the arguments.
+function __filename() {
+  if [[ -f $1 ]]; then
+    echo $(/usr/bin/basename $1)
+  fi
+}
 
-DIR=$(find_path_in_arguments $@)
+function git_dir() {
+  [[ -d "${dir}/.git" ]]
+  return $?
+}
+
+function git_root() {
+  echo "todo"
+}
+
+function debug() {
+  echo "PATH_ARG:${PATH_ARG}"
+  echo "DIR:${DIR}"
+  echo "FILE:${FILE}"
+  echo "PATH:${PATH}"
+  exit 0
+}
+
+PATH_ARG=$(find_path_in_arguments $@)
+DIR=$(__dirname ${PATH_ARG})
+FILE=$(__filename ${PATH_ARG})
+PATH="${DIR}${FILE}"
 
 for arg in "$@"; do
   case "${arg}" in
+    "--debug")                    debug                                     ;;
     "--help")                     usage                                     ;;
-    "--absolute")                 absolute_dir ${DIR}                       ;;
+    "--absolute")                 echo ${PATH}                              ;;
+    "--git-root")                 git_root ${PATH}                          ;;
   esac
 done
