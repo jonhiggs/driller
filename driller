@@ -94,5 +94,6 @@ for arg in "$@"; do
     "--help")                     usage                                     ;;
     "--absolute")                 echo ${PATH}                              ;;
     "--git-root")                 git_root ${DIR}                           ;;
+    "--basename")                 echo ${DIR}                               ;;
   esac
 done
