@@ -66,14 +66,19 @@ function __git_dir() {
   return $?
 }
 
-function git_root() {
+function __hg_dir() {
+  [[ -d "${dir}/.hg" ]]
+  return $?
+}
+
+function scm_root() {
   dir=$1
-  while ! __root_dir ${dir} && ! __git_dir ${dir}; do
+  while ! __root_dir ${dir} && ! __git_dir ${dir} && ! __hg_dir; do
     dir=$(__dirname ${dir}/../)
   done
 
   if [[ ${dir} == "/" ]]; then
-    echo "Error: Git dir not found" > /dev/stderr
+    echo "Error: SCM dir not found" > /dev/stderr
     exit 1
   fi
 
@@ -99,7 +104,7 @@ for arg in "$@"; do
     "--basename")                 __filename ${PATH_ARG} || ( echo "Error: Path isn't to a file" > /dev/stderr && false );;
     "--debug")                    debug                                     ;;
     "--dirname")                  echo ${DIR}                               ;;
-    "--scm-root")                 git_root ${DIR}                           ;;
+    "--scm-root")                 scm_root ${DIR}                           ;;
     "--help")                     usage                                     ;;
   esac
 done

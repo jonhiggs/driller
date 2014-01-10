@@ -92,11 +92,26 @@ function testScmRootGitSimpleFile() {
   assertEquals "stdout"         "/tmp/driller/2/"           "$(cat ${stdout})"
 }
 
-function testScmRootGitHitRoot() {
+function testScmRootHgSimpleDir() {
+  ../driller --scm-root /tmp/driller/3/1                    > ${stdout}
+  status=$?
+  assertEquals "exit status"    "0"                         "${status}"
+  assertEquals "stdout"         "/tmp/driller/3/"           "$(cat ${stdout})"
+}
+
+function testScmRootHgSimpleFile() {
+  ../driller --scm-root /tmp/driller/3/file                 > ${stdout} 2> ${stderr}
+  status=$?
+  assertEquals "exit status"    "0"                         "${status}"
+  assertEquals "stdout"         "/tmp/driller/3/"           "$(cat ${stdout})"
+  assertEquals "stderr"         ""                          "$(cat ${stderr})"
+}
+
+function testScmRootHitRoot() {
   ../driller --scm-root ${HOME}                             > ${stdout} 2> ${stderr}
   status=$?
   assertEquals "exit status"    "1"                         "${status}"
-  assertEquals "stderr"         "Error: Git dir not found"  "$(cat ${stderr})"
+  assertEquals "stderr"         "Error: SCM dir not found"  "$(cat ${stderr})"
   assertEquals "stdout"         ""                          "$(cat ${stdout})"
 }
 
@@ -130,6 +145,9 @@ function oneTimeSetUp() {
   mkdir -p /tmp/driller/2/1
   mkdir -p /tmp/driller/2/.git
   touch    /tmp/driller/2/file
+  mkdir -p /tmp/driller/3/.hg
+  mkdir -p /tmp/driller/3/1
+  touch    /tmp/driller/3/file
 }
 
 function oneTimeTearDown() {
