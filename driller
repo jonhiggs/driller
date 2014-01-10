@@ -7,6 +7,8 @@ USAGE:
 
 OPTIONS:
   --absolute                Provide the absolute path.
+  --basename                Provide the filename from a path.
+  --dirname                 Provide the dirname from a path.
   --git-root                Find the git root.
   --help                    This help.
 
@@ -48,6 +50,9 @@ function __dirname() {
 function __filename() {
   if [[ -f $1 ]]; then
     echo $(/usr/bin/basename $1)
+    return 0
+  else
+    return 1
   fi
 }
 
@@ -85,15 +90,18 @@ function debug() {
 
 PATH_ARG=$(find_path_in_arguments $@)
 DIR=$(__dirname ${PATH_ARG})
-FILE=$(__filename ${PATH_ARG})
+FILE=$(__filename ${PATH_ARG}; true)
 PATH="${DIR}${FILE}"
 
 for arg in "$@"; do
   case "${arg}" in
-    "--debug")                    debug                                     ;;
-    "--help")                     usage                                     ;;
     "--absolute")                 echo ${PATH}                              ;;
+    "--basename")                 __filename ${PATH_ARG} || ( echo "Error: Path isn't to a file" > /dev/stderr && false );;
+    "--debug")                    debug                                     ;;
+    "--dirname")                  echo ${DIR}                               ;;
     "--git-root")                 git_root ${DIR}                           ;;
-    "--basename")                 echo ${DIR}                               ;;
+    "--help")                     usage                                     ;;
   esac
 done
+
+exit $?

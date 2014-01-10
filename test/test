@@ -100,11 +100,26 @@ function testGitRootHitRoot() {
   assertEquals "stdout"         ""                          "$(cat ${stdout})"
 }
 
-function testBaseSimple() {
-  ../driller --basename /tmp/driller/1/1/file               > ${stdout}
+function testDirnameSimple() {
+  ../driller --dirname /tmp/driller/1/1/file                > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/tmp/driller/1/1/"         "$(cat ${stdout})"
+}
+
+function testBasenameSimple() {
+  ../driller --basename /tmp/driller/1/1/file               > ${stdout}
+  status=$?
+  assertEquals "exit status"    "0"                         "${status}"
+  assertEquals "stdout"         "file"                      "$(cat ${stdout})"
+}
+
+function testBasenameNoFile() {
+  ../driller --basename /tmp/driller/1/1/                   > ${stdout} 2> ${stderr}
+  status=$?
+  assertEquals "exit status"    "1"                         "${status}"
+  assertEquals "stdout"         ""                          "$(cat ${stdout})"
+  assertEquals "stderr"         "Error: Path isn't to a file" "$(cat ${stderr})"
 }
 
 function oneTimeSetUp() {
