@@ -9,7 +9,7 @@ OPTIONS:
   --absolute                Provide the absolute path.
   --basename                Provide the filename from a path.
   --dirname                 Provide the dirname from a path.
-  --git-root                Find the git root.
+  --scm-root                Find the scm root (git or hg).
   --help                    This help.
 
 EOF
@@ -99,7 +99,7 @@ for arg in "$@"; do
     "--basename")                 __filename ${PATH_ARG} || ( echo "Error: Path isn't to a file" > /dev/stderr && false );;
     "--debug")                    debug                                     ;;
     "--dirname")                  echo ${DIR}                               ;;
-    "--git-root")                 git_root ${DIR}                           ;;
+    "--scm-root")                 git_root ${DIR}                           ;;
     "--help")                     usage                                     ;;
   esac
 done
