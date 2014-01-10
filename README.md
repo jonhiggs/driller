@@ -10,8 +10,11 @@ Nothing special...
 
 `driller <OPTION> <PATH>`
 
-
 ## Options
 
-    --absolute      Provide the absolute path from a glob.
-    --git-root      Find the git root for a path.
+| Switch     | Description                          |
+|------------|--------------------------------------|
+| --absolute | Provide the absolute path.           |
+| --basename | Provide the filename from a path.    |
+| --dirname  | Provide the dirname from a path.     |
+| --scm-root | Find the SCM root (git or hg).       |
