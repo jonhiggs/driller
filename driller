@@ -45,7 +45,7 @@ function __dirname() {
   fi
 
   # compress // down to /
-  echo ${dir} | /usr/bin/sed 's#//#/#g'
+  echo ${dir} | sed 's#//#/#g'
 }
 
 function __filename() {
