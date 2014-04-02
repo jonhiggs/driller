@@ -32,7 +32,7 @@ function find_path_in_arguments() {
 }
 
 function __dirname() {
-  PATH="/usr/local/bin:/usr/bin"
+  PATH="/usr/local/bin:/usr/bin/:bin"
   if [[ -f $1 ]]; then
     dir=$(/usr/bin/dirname $1)
   else
