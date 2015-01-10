@@ -65,14 +65,15 @@ function __clean_path() {
 }
 
 function __dirname() {
-  [[ -z $1 ]] && dir=${PATH_ARG} || dir=$1
-  [[ ! -d ${dir} ]] && dir=$(dirname $dir)
-  __clean_path ${dir}
+  if [[ -f $1 ]]; then
+    __clean_path $(dirname $1)
+  else
+    __clean_path $1
+  fi
 }
 
 function __filename() {
-  [[ -d ${PATH_ARG} ]] && return 1
-  echo $(basename ${PATH_ARG})
+  [[ -f $1 ]] && basename $(__clean_path $1)
 }
 
 function __git_dir() {
@@ -102,8 +103,8 @@ function scm_root() {
 
 function debug() {
   echo "PATH_ARG:${PATH_ARG}"
-  echo "DIR:$(__dirname)"
-  echo "FILE:$(__filename)"
+  echo "DIR:$(__dirname ${PATH_ARG})"
+  echo "FILE:$(__filename ${PATH_ARG})"
   echo "FLAT_PATH:$(__clean_path ${PATH_ARG})"
   exit 0
 }
@@ -123,10 +124,10 @@ PATH_ARG=$(find_path_in_arguments $@)
 for arg in "$@"; do
   case "${arg}" in
     "--absolute")                 __clean_path ${PATH_ARG}                   ;;
-    "--basename")                 __filename || error "Path isn't to a file" ;;
+    "--basename")                 __filename ${PATH_ARG} || error "Path isn't to a file" ;;
     "--debug")                    debug                                     ;;
-    "--dirname")                  __dirname                                 ;;
-    "--scm-root")                 scm_root $(__dirname)                           ;;
+    "--dirname")                  __dirname ${PATH_ARG}                                ;;
+    "--scm-root")                 scm_root $(__dirname ${PATH_ARG})                           ;;
     "--help")                     usage                                     ;;
   esac
 done
