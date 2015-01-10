@@ -1,14 +1,18 @@
 # driller
 
-Assert details from a path.
+Driller's purpose is to feed it a path and it will return a clean and flattened
+path of the type you desire.
+
 
 ## Requirements
 
 Nothing special...
 
+
 ## Usage
 
 `driller <OPTION> <PATH>`
+
 
 ## Options
 
