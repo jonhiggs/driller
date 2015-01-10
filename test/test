@@ -11,7 +11,7 @@ function testDebugFile() {
   assertEquals "path_arg"       "/tmp/driller/1/1/../1/file" "$(grep ^PATH_ARG: ${stdout} | cut -d: -f2)"
   assertEquals "dir"            "/tmp/driller/1/1/"         "$(grep ^DIR: ${stdout} | cut -d: -f2)"
   assertEquals "file"           "file"                      "$(grep ^FILE: ${stdout} | cut -d: -f2)"
-  assertEquals "path"           "/tmp/driller/1/1/file"     "$(grep ^PATH: ${stdout} | cut -d: -f2)"
+  assertEquals "flat_path"      "/tmp/driller/1/1/file"     "$(grep ^FLAT_PATH: ${stdout} | cut -d: -f2)"
 }
 
 function testDebugDir() {
@@ -19,7 +19,7 @@ function testDebugDir() {
   assertEquals "path_arg"       "/tmp/driller/1/1/../1"     "$(grep ^PATH_ARG: ${stdout} | cut -d: -f2)"
   assertEquals "dir"            "/tmp/driller/1/1/"         "$(grep ^DIR: ${stdout} | cut -d: -f2)"
   assertEquals "file"           ""                          "$(grep ^FILE: ${stdout} | cut -d: -f2)"
-  assertEquals "path"           "/tmp/driller/1/1/"         "$(grep ^PATH: ${stdout} | cut -d: -f2)"
+  assertEquals "flat_path"      "/tmp/driller/1/1/"         "$(grep ^FLAT_PATH: ${stdout} | cut -d: -f2)"
 }
 
 function testDebugNonDir() {
