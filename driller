@@ -66,12 +66,12 @@ function __scm_dir() {
 
 function scm_root() {
   dir=$1
-  while ! __root_dir ${dir} && ! __git_dir ${dir} && ! __hg_dir; do
+  until __root_dir ${dir}; do
+    __scm_dir ${dir} && echo ${dir} && return 0
     dir=$(__dirname ${dir}/../)
   done
 
-  [[ ${dir} == "/" ]] && fatal "SCM dir not found"
-  echo ${dir}
+  fatal "SCM dir not found"
 }
 
 function debug() {
