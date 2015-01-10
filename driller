@@ -50,12 +50,12 @@ function __root_dir() {
 }
 
 function __git_dir() {
-  [[ -d "${dir}/.git" ]]
+  [[ -d "$1/.git" ]]
   return $?
 }
 
 function __hg_dir() {
-  [[ -d "${dir}/.hg" ]]
+  [[ -d "$1/.hg" ]]
   return $?
 }
 
