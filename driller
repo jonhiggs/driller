@@ -80,10 +80,10 @@ function __scm_dir() {
 }
 
 function scm_root() {
-  dir=$1
-  until [[ $(__clean_path ${dir}) == "/" ]]; do
+  dir=$(__dirname $1)
+  until [[ ${dir} == "/" ]]; do
     __scm_dir ${dir} && __clean_path ${dir} && return 0
-    dir="${dir}/../"
+    dir="$(__clean_path ${dir}/../)"
   done
 
   fatal "SCM dir not found"
@@ -115,7 +115,7 @@ for arg in "$@"; do
     "--basename")                 __filename ${PATH_ARG} || error "Path isn't to a file" ;;
     "--debug")                    debug                                     ;;
     "--dirname")                  __dirname ${PATH_ARG}                                ;;
-    "--scm-root")                 scm_root $(__dirname ${PATH_ARG})                           ;;
+    "--scm-root")                 scm_root ${PATH_ARG}                           ;;
     "--help")                     usage                                     ;;
   esac
 done
