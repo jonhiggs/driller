@@ -76,19 +76,8 @@ function __filename() {
   [[ -f $1 ]] && basename $(__clean_path $1)
 }
 
-function __git_dir() {
-  [[ -d "$1/.git" ]]
-  return $?
-}
-
-function __hg_dir() {
-  [[ -d "$1/.hg" ]]
-  return $?
-}
-
 function __scm_dir() {
-  __git_dir $1 || __hg_dir $1
-  return $?
+  [[ -d "$1/.hg" || -d "$1/.git" ]] && return 0
 }
 
 function scm_root() {
