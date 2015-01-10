@@ -78,10 +78,7 @@ function scm_root() {
     dir=$(__dirname ${dir}/../)
   done
 
-  if [[ ${dir} == "/" ]]; then
-    fatal "SCM dir not found"
-  fi
-
+  [[ ${dir} == "/" ]] && fatal "SCM dir not found"
   echo ${dir}
 }
 
