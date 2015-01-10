@@ -25,8 +25,7 @@ function find_path_in_arguments() {
   done
   [[ -z ${path} ]] && path=$(pwd)
   if [[ ! -d ${path} ]] && [[ ! -f ${path} ]]; then
-    echo "Error: Invalid path" > /dev/stderr
-    exit 1
+    fatal "Invalid path"
   fi
   echo ${path}
 }
@@ -80,8 +79,7 @@ function scm_root() {
   done
 
   if [[ ${dir} == "/" ]]; then
-    echo "Error: SCM dir not found" > /dev/stderr
-    exit 1
+    fatal "SCM dir not found"
   fi
 
   echo ${dir}
@@ -95,6 +93,16 @@ function debug() {
   exit 0
 }
 
+function error() {
+  echo "Error: $1" > /dev/stderr
+  return 1
+}
+
+function fatal() {
+  echo "Fatal: $1" > /dev/stderr
+  exit 1
+}
+
 PATH_ARG=$(find_path_in_arguments $@)
 DIR=$(__dirname ${PATH_ARG})
 FILE=$(__filename ${PATH_ARG}; true)
@@ -103,7 +111,7 @@ PATH="${DIR}${FILE}"
 for arg in "$@"; do
   case "${arg}" in
     "--absolute")                 echo ${PATH}                              ;;
-    "--basename")                 __filename ${PATH_ARG} || ( echo "Error: Path isn't to a file" > /dev/stderr && false );;
+    "--basename")                 __filename ${PATH_ARG} || error "Path isn't to a file" ;;
     "--debug")                    debug                                     ;;
     "--dirname")                  echo ${DIR}                               ;;
     "--scm-root")                 scm_root ${DIR}                           ;;

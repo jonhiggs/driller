@@ -26,7 +26,7 @@ function testDebugNonDir() {
   ../driller --debug /tmp/driller/3/3/../1                  > ${stdout} 2> ${stderr}
   status=$?
   assertEquals "exit status"    "1"                         "${status}"
-  assertEquals "stderr"         "Error: Invalid path"       "$(cat ${stderr})"
+  assertEquals "stderr"         "Fatal: Invalid path"       "$(cat ${stderr})"
 }
 
 function testAbsoluteSimpleDir() {
@@ -111,7 +111,7 @@ function testScmRootHitRoot() {
   ../driller --scm-root ${HOME}                             > ${stdout} 2> ${stderr}
   status=$?
   assertEquals "exit status"    "1"                         "${status}"
-  assertEquals "stderr"         "Error: SCM dir not found"  "$(cat ${stderr})"
+  assertEquals "stderr"         "Fatal: SCM dir not found"  "$(cat ${stderr})"
   assertEquals "stdout"         ""                          "$(cat ${stdout})"
 }
 
