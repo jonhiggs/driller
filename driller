@@ -59,6 +59,11 @@ function __hg_dir() {
   return $?
 }
 
+function __scm_dir() {
+  __git_dir $1 || __hg_dir $1
+  return $?
+}
+
 function scm_root() {
   dir=$1
   while ! __root_dir ${dir} && ! __git_dir ${dir} && ! __hg_dir; do
