@@ -44,9 +44,6 @@ function __filename() {
   echo $(basename $1)
 }
 
-function __root_dir() {
-  [[ $(__dirname ${dir}) == "/" ]]
-  return $?
 }
 
 function __git_dir() {
@@ -66,7 +63,7 @@ function __scm_dir() {
 
 function scm_root() {
   dir=$1
-  until __root_dir ${dir}; do
+  until [[ $(__dirname ${dir}) == "/" ]]; do
     __scm_dir ${dir} && echo ${dir} && return 0
     dir=$(__dirname ${dir}/../)
   done
