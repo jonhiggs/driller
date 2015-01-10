@@ -71,8 +71,29 @@ function testAbsoluteSimpleFile() {
   assertEquals "stdout"         "/tmp/driller/1/1/file"     "$(cat ${stdout})"
 }
 
+function testDeviceFile() {
+  ../driller --absolute /dev/null                           > ${stdout}
+  status=$?
+  assertEquals "exit status"    "0"                         "${status}"
+  assertEquals "stdout"         "/dev/null"                 "$(cat ${stdout})"
+}
+
+function testLinkFile() {
+  ../driller --absolute /tmp/driller/4/link               > ${stdout}
+  status=$?
+  assertEquals "exit status"    "0"                         "${status}"
+  assertEquals "stdout"         "/tmp/driller/4/link"       "$(cat ${stdout})"
+}
+
+function testSymlinkFile() {
+  ../driller --absolute /tmp/driller/4/symlink            > ${stdout}
+  status=$?
+  assertEquals "exit status"    "0"                         "${status}"
+  assertEquals "stdout"         "/tmp/driller/4/symlink"    "$(cat ${stdout})"
+}
+
 function testAbsoluteComplicatedFile() {
-  ../driller --absolute /tmp/driller/1/../1/1/file               > ${stdout}
+  ../driller --absolute /tmp/driller/1/../1/1/file          > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/tmp/driller/1/1/file"     "$(cat ${stdout})"
@@ -148,6 +169,10 @@ function oneTimeSetUp() {
   mkdir -p /tmp/driller/3/.hg
   mkdir -p /tmp/driller/3/1
   touch    /tmp/driller/3/file
+  mkdir -p /tmp/driller/4/
+  touch    /tmp/driller/4/file
+  ln       /tmp/driller/4/file /tmp/driller/4/link
+  ln -s    /dev/null /tmp/driller/4/symlink
 }
 
 function oneTimeTearDown() {

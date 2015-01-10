@@ -24,14 +24,14 @@ function find_path_in_arguments() {
     fi
   done
   [[ -z ${path} ]] && path=$(pwd)
-  if [[ ! -d ${path} ]] && [[ ! -f ${path} ]]; then
+  if [[ ! -e ${path} ]]; then
     fatal "Invalid path"
   fi
   echo ${path}
 }
 
 function __dirname() {
-  if [[ -f $1 ]]; then
+  if [[ ! -d $1 ]]; then
     dir=$(dirname $1)
   else
     dir=$1
@@ -48,12 +48,8 @@ function __dirname() {
 }
 
 function __filename() {
-  if [[ -f $1 ]]; then
-    echo $(basename $1)
-    return 0
-  else
-    return 1
-  fi
+  [[ -d $1 ]] && return 1
+  echo $(basename $1)
 }
 
 function __root_dir() {
