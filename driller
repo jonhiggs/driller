@@ -24,10 +24,10 @@ function find_path_in_arguments() {
       path=${arg}
     fi
   done
+
   [[ -z ${path} ]] && path=$(pwd)
-  if [[ ! -e ${path} ]]; then
-    fatal "Invalid path"
-  fi
+  [[ ! -e ${path} ]] && fatal "Invalid path"
+
   echo ${path}
 }
 
