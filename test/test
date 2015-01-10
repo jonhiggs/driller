@@ -79,14 +79,14 @@ function testDeviceFile() {
 }
 
 function testLinkFile() {
-  ../driller --absolute /tmp/driller/4/link               > ${stdout}
+  ../driller --absolute /tmp/driller/4/link                 > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/tmp/driller/4/link"       "$(cat ${stdout})"
 }
 
 function testSymlinkFile() {
-  ../driller --absolute /tmp/driller/4/symlink            > ${stdout}
+  ../driller --absolute /tmp/driller/4/symlink              > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/tmp/driller/4/symlink"    "$(cat ${stdout})"
