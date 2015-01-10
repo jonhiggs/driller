@@ -20,6 +20,7 @@ EOF
 function find_path_in_arguments() {
   for arg in "$@"; do
     if ! [[ ${arg} =~ ^- ]]; then
+      [[ ! -z ${path} ]] && fatal "Only one path should be parsed in."
       path=${arg}
     fi
   done

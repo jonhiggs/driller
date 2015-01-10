@@ -92,6 +92,20 @@ function testSymlinkFile() {
   assertEquals "stdout"         "/tmp/driller/4/symlink"    "$(cat ${stdout})"
 }
 
+function testWildcardFileSingle() {
+  ../driller --absolute /tmp/driller/4/fi*                  > ${stdout}
+  status=$?
+  assertEquals "exit status"    "0"                         "${status}"
+  assertEquals "stdout"         "/tmp/driller/4/file"       "$(cat ${stdout})"
+}
+
+function testWildcardFileMultiple() {
+  ../driller --absolute /dev/*                              > ${stdout} 2> ${stderr}
+  status=$?
+  assertEquals "exit status"    "1"                         "${status}"
+  assertEquals "stderr"         "Fatal: Only one path should be parsed in."       "$(cat ${stderr})"
+}
+
 function testAbsoluteComplicatedFile() {
   ../driller --absolute /tmp/driller/1/../1/1/file          > ${stdout}
   status=$?
