@@ -32,20 +32,11 @@ function find_path_in_arguments() {
 }
 
 function __dirname() {
-  if [[ ! -d $1 ]]; then
-    dir=$(dirname $1)
-  else
-    dir=$1
-  fi
-
+  [[ ! -d $1 ]] && dir=$(dirname $1) || dir=$1
   cd ${dir}
   dir=$(pwd)
-  if ! [[ ${dir} =~ /$ ]]; then
-    dir="${dir}/"
-  fi
-
-  # compress // down to /
-  echo ${dir} | sed 's#//#/#g'
+  [[ ! ${dir} =~ /$ ]] && dir="${dir}/"
+  echo ${dir} | sed 's#//#/#g'        # compress // down to /
 }
 
 function __filename() {
