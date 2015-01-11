@@ -64,10 +64,10 @@ function __clean_path() {
 }
 
 function __dirname() {
-  if [[ -f $1 ]]; then
-    __clean_path $(dirname $1)
-  else
+  if [[ -d $1 ]]; then
     __clean_path $1
+  else
+    __clean_path $(dirname $1)
   fi
 }
 
