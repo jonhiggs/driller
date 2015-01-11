@@ -3,7 +3,7 @@
 function usage() {
   cat <<EOF
 USAGE:
-  $(basename $0) [OPTION] <dir>
+  $(basename -- $0) [OPTION] <dir>
 
 OPTIONS:
   --absolute                Provide the absolute path.
@@ -39,8 +39,8 @@ function __qualify_dot_dot_slashes() {
     dir=$1
     file=""
   else
-    dir=$(dirname $1)
-    file=$(basename $1)
+    dir=$(dirname -- $1)
+    file=$(basename -- $1)
   fi
 
   cd ${dir}
@@ -67,12 +67,12 @@ function __dirname() {
   if [[ -d $1 ]]; then
     __clean_path $1
   else
-    __clean_path $(dirname $1)
+    __clean_path $(dirname -- $1)
   fi
 }
 
 function __filename() {
-  [[ -f $1 ]] && basename $(__clean_path $1)
+  [[ -f $1 ]] && basename -- $(__clean_path $1)
 }
 
 function __scm_dir() {
