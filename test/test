@@ -7,7 +7,7 @@ function testHelp() {
 }
 
 function testDebugFile() {
-  ../driller --debug /tmp/driller/1/1/../1/file                  > ${stdout}
+  ../driller --debug /tmp/driller/1/1/../1/file             > ${stdout}
   assertEquals "path_arg"       "/tmp/driller/1/1/../1/file" "$(grep ^PATH_ARG: ${stdout} | cut -d: -f2)"
   assertEquals "dir"            "/tmp/driller/1/1/"         "$(grep ^DIR: ${stdout} | cut -d: -f2)"
   assertEquals "file"           "file"                      "$(grep ^FILE: ${stdout} | cut -d: -f2)"
