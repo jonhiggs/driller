@@ -111,13 +111,23 @@ PATH_ARG=$(find_path_in_arguments $@)
 
 for arg in "$@"; do
   case "${arg}" in
-    "--absolute")                 __clean_path ${PATH_ARG}                   ;;
-    "--basename")                 __filename ${PATH_ARG} || error "Path isn't to a file" ;;
-    "--debug")                    debug                                     ;;
-    "--dirname")                  __dirname ${PATH_ARG}                                ;;
-    "--scm-root")                 scm_root ${PATH_ARG}                           ;;
-    "--help")                     usage                                     ;;
+    "--absolute")
+      __clean_path ${PATH_ARG}
+      ;;
+    "--basename")
+      __filename ${PATH_ARG} || error "Path isn't to a file"
+      ;;
+    "--debug")
+      debug
+      ;;
+    "--dirname")
+      __dirname ${PATH_ARG}
+      ;;
+    "--scm-root")
+      scm_root ${PATH_ARG}
+      ;;
+    "--help")
+      usage
+      ;;
   esac
 done
-
-exit $?
