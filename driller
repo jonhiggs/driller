@@ -108,6 +108,7 @@ function fatal() {
 }
 
 PATH_ARG=$(eval "echo \$$#")                    # the last argument is the file
+[[ "${PATH_ARG}" =~ --.* ]] && usage
 set -- $(echo $@ | sed -E "s#${PATH_ARG}\$##")
 
 for arg in "$@"; do
