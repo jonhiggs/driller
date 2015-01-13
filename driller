@@ -72,7 +72,7 @@ function __scm_dir() {
   [[ -d "$1/.hg" || -d "$1/.git" ]] && return 0
 }
 
-function scm_root() {
+function __scm_root() {
   dir=$(__dirname $1)
   until [[ ${dir} == "/" ]]; do
     __scm_dir ${dir} && __clean_path ${dir} && return 0
@@ -97,11 +97,6 @@ function __debug() {
   exit 0
 }
 
-function error() {
-  echo "Error: $1" > /dev/stderr
-  return 1
-}
-
 function fatal() {
   echo "Fatal: $1" > /dev/stderr
   exit 1
@@ -111,30 +106,40 @@ function fatal() {
 
 PATH_ARGS=""
 OPTION="--absolute"
+
 for a in "$@"; do
-  [[ -e "$a" ]] && PATH_ARGS="${PATH_ARGS} $a"
-  [[ "$a" =~ --[a-z]* ]] && OPTION=$a
+  if [[ -e "$a" ]]; then
+    PATH_ARGS="${PATH_ARGS} $a"
+  elif [[ "$a" =~ ^--[a-z]+$ ]]; then
+    OPTION=$a
+  fi
 done
 
-for arg in "$OPTION"; do
-  case "${arg}" in
+for path in ${PATH_ARGS}; do
+  case "${OPTION}" in
     "--absolute")
-      for path in ${PATH_ARGS}; do __clean_path $path; done
+      __clean_path $path
       ;;
     "--basename")
-      for path in ${PATH_ARGS}; do __filename $path; done
+      __filename $path
       ;;
     "--debug")
-      for path in ${PATH_ARGS}; do __debug $path; done
+      __debug $path
       ;;
     "--dirname")
-      for path in ${PATH_ARGS}; do __dirname $path; done
+      __dirname $path
       ;;
-    "--scm-root")
-      for path in ${PATH_ARGS}; do scm_root $path; done
+    "--scm")
+      __scm_root $path
       ;;
-    "--help")
-      usage
+    "--debug")
+      __debug $path
       ;;
   esac
 done
+
+case "${OPTION}" in
+  "--help")
+    usage
+    ;;
+esac

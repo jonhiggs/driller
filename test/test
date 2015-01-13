@@ -97,6 +97,17 @@ function testAbsoluteFileLooksLikeSwitch() {
   assertEquals "stderr"         ""                          "$(cat ${stderr})"
 }
 
+function testAbsoluteFileLooksLikeHelp() {
+  d=$(pwd)
+  pushd /tmp/driller/5/ &> /dev/null
+  ${d}/../driller --absolute -- --help                         > ${stdout} 2> ${stderr}
+  popd &> /dev/null
+  status=$?
+  assertEquals "exit status"    "0"                         "${status}"
+  assertEquals "stdout"         "/tmp/driller/5/--help"     "$(cat ${stdout})"
+  assertEquals "stderr"         ""                          "$(cat ${stderr})"
+}
+
 function testAbsoluteDeviceFile() {
   ../driller --absolute /dev/null                           > ${stdout}
   status=$?
@@ -142,28 +153,28 @@ function testAbsoluteComplicatedFile() {
 }
 
 function testScmRootGitSimpleDir() {
-  ../driller --scm-root /tmp/driller/2/1                    > ${stdout}
+  ../driller --scm /tmp/driller/2/1                    > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/tmp/driller/2/"           "$(cat ${stdout})"
 }
 
 function testScmRootGitSimpleFile() {
-  ../driller --scm-root /tmp/driller/2/file                 > ${stdout}
+  ../driller --scm /tmp/driller/2/file                 > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/tmp/driller/2/"           "$(cat ${stdout})"
 }
 
 function testScmRootHgSimpleDir() {
-  ../driller --scm-root /tmp/driller/3/1                    > ${stdout}
+  ../driller --scm /tmp/driller/3/1                    > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/tmp/driller/3/"           "$(cat ${stdout})"
 }
 
 function testScmRootHgSimpleFile() {
-  ../driller --scm-root /tmp/driller/3/file                 > ${stdout} 2> ${stderr}
+  ../driller --scm /tmp/driller/3/file                 > ${stdout} 2> ${stderr}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/tmp/driller/3/"           "$(cat ${stdout})"
@@ -171,7 +182,7 @@ function testScmRootHgSimpleFile() {
 }
 
 function testScmRootHitRoot() {
-  ../driller --scm-root ${HOME}                             > ${stdout} 2> ${stderr}
+  ../driller --scm ${HOME}                             > ${stdout} 2> ${stderr}
   status=$?
   assertEquals "exit status"    "1"                         "${status}"
   assertEquals "stderr"         "Fatal: SCM dir not found"  "$(cat ${stderr})"
@@ -248,6 +259,7 @@ function oneTimeSetUp() {
   ln       /tmp/driller/4/file /tmp/driller/4/link
   mkdir -p /tmp/driller/5/
   touch    /tmp/driller/5/-file
+  touch    /tmp/driller/5/--help
   ln -s    /dev/null /tmp/driller/4/symlink
 }
 
