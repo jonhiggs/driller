@@ -103,14 +103,13 @@ function fatal() {
 }
 
 [[ -z $@ ]] && usage
-
 PATH_ARGS=""
 OPTION="--absolute"
 
 for a in "$@"; do
   if [[ -e "$a" ]]; then
     PATH_ARGS="${PATH_ARGS} $a"
-  elif [[ "$a" =~ ^--[a-z]+$ ]]; then
+  elif [[ "$a" =~ ^--[a-z\-]+$ ]]; then
     OPTION=$a
   fi
 done
@@ -129,11 +128,8 @@ for path in ${PATH_ARGS}; do
     "--dirname")
       __dirname $path
       ;;
-    "--scm")
+    "--scm"|"--scm-root")
       __scm_root $path
-      ;;
-    "--debug")
-      __debug $path
       ;;
   esac
 done
