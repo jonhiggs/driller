@@ -6,6 +6,13 @@ function testHelp() {
   assertEquals "stdout"         "USAGE:"                    "$(head -n1 ${stdout})"
 }
 
+function testNoArg() {
+  ../driller                                                > ${stdout}
+  status=$?
+  assertEquals "exit status"    "0"                         "${status}"
+  assertEquals "stdout"         "USAGE:"                    "$(head -n1 ${stdout})"
+}
+
 function testDebugFile() {
   ../driller --debug /tmp/driller/1/1/../1/file             > ${stdout}
   assertEquals "path_arg"       "/tmp/driller/1/1/../1/file" "$(grep ^PATH_ARG: ${stdout} | cut -d: -f2)"
