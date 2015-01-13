@@ -71,40 +71,53 @@ function testAbsoluteSimpleFile() {
   assertEquals "stdout"         "/tmp/driller/1/1/file"     "$(cat ${stdout})"
 }
 
-function testDeviceFile() {
+function testAbsoluteFileLooksLikeSwitch() {
+  d=$(pwd)
+  pushd /tmp/driller/5/ &> /dev/null
+  ${d}/../driller --absolute -file                            > ${stdout} 2> ${stderr}
+  popd &> /dev/null
+  status=$?
+  assertEquals "exit status"    "0"                         "${status}"
+  assertEquals "stdout"         "/tmp/driller/5/-file"      "$(cat ${stdout})"
+  assertEquals "stderr"         ""                          "$(cat ${stderr})"
+}
+
+function testAbsoluteDeviceFile() {
   ../driller --absolute /dev/null                           > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/dev/null"                 "$(cat ${stdout})"
 }
 
-function testLinkFile() {
+function testAbsoluteLinkFile() {
   ../driller --absolute /tmp/driller/4/link                 > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/tmp/driller/4/link"       "$(cat ${stdout})"
 }
 
-function testSymlinkFile() {
+function testAbsoluteSymlinkFile() {
   ../driller --absolute /tmp/driller/4/symlink              > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/tmp/driller/4/symlink"    "$(cat ${stdout})"
 }
 
-function testWildcardFileSingle() {
+function testAbsoluteWildcardFileSingle() {
   ../driller --absolute /tmp/driller/4/fi*                  > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/tmp/driller/4/file"       "$(cat ${stdout})"
 }
 
-function testWildcardFileMultiple() {
-  ../driller --absolute /dev/*                              > ${stdout} 2> ${stderr}
+function testAbsoluteWildcardFileMulti() {
+  ../driller --absolute /tmp/driller/4/*                    > ${stdout} 2> ${stderr}
   status=$?
   assertEquals "exit status"    "1"                         "${status}"
-  assertEquals "stderr"         "Fatal: Only one path should be parsed in."       "$(cat ${stderr})"
+  assertEquals "stdout"         ""                          "$(cat ${stdout})"
+  assertEquals "stderr"         "Fatal: Too many files"     "$(cat ${stderr})"
 }
+
 
 function testAbsoluteComplicatedFile() {
   ../driller --absolute /tmp/driller/1/../1/1/file          > ${stdout}
@@ -157,6 +170,13 @@ function testDirnameSimple() {
   assertEquals "stdout"         "/tmp/driller/1/1/"         "$(cat ${stdout})"
 }
 
+function testDirnameRelative() {
+  ../driller --dirname ./                                   > ${stdout}
+  status=$?
+  assertEquals "exit status"    "0"                         "${status}"
+  assertEquals "stdout"         "${running_dir}/"           "$(cat ${stdout})"
+}
+
 function testBasenameSimple() {
   ../driller --basename /tmp/driller/1/1/file               > ${stdout}
   status=$?
@@ -164,15 +184,23 @@ function testBasenameSimple() {
   assertEquals "stdout"         "file"                      "$(cat ${stdout})"
 }
 
+function testBasenameRelative() {
+  ../driller --basename ./test                              > ${stdout}
+  status=$?
+  assertEquals "exit status"    "0"                         "${status}"
+  assertEquals "stdout"         "test"                      "$(cat ${stdout})"
+}
+
 function testBasenameNoFile() {
   ../driller --basename /tmp/driller/1/1/                   > ${stdout} 2> ${stderr}
   status=$?
   assertEquals "exit status"    "1"                         "${status}"
   assertEquals "stdout"         ""                          "$(cat ${stdout})"
-  assertEquals "stderr"         "Error: Path isn't to a file" "$(cat ${stderr})"
+  assertEquals "stderr"         "Fatal: Path isn't to a file" "$(cat ${stderr})"
 }
 
 function oneTimeSetUp() {
+  running_dir=$(pwd)
   stdout="/tmp/driller/stdout"
   stderr="/tmp/driller/stderr"
   mkdir -p /tmp/driller/1/1
@@ -186,6 +214,8 @@ function oneTimeSetUp() {
   mkdir -p /tmp/driller/4/
   touch    /tmp/driller/4/file
   ln       /tmp/driller/4/file /tmp/driller/4/link
+  mkdir -p /tmp/driller/5/
+  touch    /tmp/driller/5/-file
   ln -s    /dev/null /tmp/driller/4/symlink
 }
 
@@ -196,6 +226,10 @@ function oneTimeTearDown() {
 function TearDown() {
   rm -Rf ${stdout} ${stderr}
 }
+
+# TODO: test that current directory works when it's not qualified.
+# TODO: test symlink to a dir ends in slash
+# TODO: test that symlink to a file does not end in a slash.
 
 # load and run shUnit2
 source ./shunit/src/shunit2
