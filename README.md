@@ -21,4 +21,4 @@ Nothing special...
 | --absolute | Provide the absolute path.           |
 | --basename | Provide the filename from a path.    |
 | --dirname  | Provide the dirname from a path.     |
-| --scm-root | Find the SCM root (git or hg).       |
+| --scm      | Find the SCM root (git or hg).       |
