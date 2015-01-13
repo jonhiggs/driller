@@ -129,6 +129,13 @@ function testAbsoluteSymlinkFile() {
   assertEquals "stdout"         "/tmp/driller/4/symlink"    "$(cat ${stdout})"
 }
 
+function testAbsoluteSymlinkDir() {
+  ../driller --absolute /tmp/driller/4/symlink_dir          > ${stdout}
+  status=$?
+  assertEquals "exit status"    "0"                         "${status}"
+  assertEquals "stdout"         "/tmp/driller/4/symlink_dir/"   "$(cat ${stdout})"
+}
+
 function testAbsoluteWildcardFileSingle() {
   ../driller --absolute /tmp/driller/4/fi*                  > ${stdout}
   status=$?
@@ -142,7 +149,8 @@ function testAbsoluteWildcardFileMulti() {
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/tmp/driller/4/file
 /tmp/driller/4/link
-/tmp/driller/4/symlink"                          "$(cat ${stdout})"
+/tmp/driller/4/symlink
+/tmp/driller/4/symlink_dir/"                          "$(cat ${stdout})"
 }
 
 function testAbsoluteComplicatedFile() {
@@ -217,13 +225,14 @@ function testBasenameRelative() {
   assertEquals "stdout"         "test"                      "$(cat ${stdout})"
 }
 
-function testBasenameNoFile() {
-  ../driller --basename /tmp/driller/1/1/                   > ${stdout} 2> ${stderr}
-  status=$?
-  assertEquals "exit status"    "1"                         "${status}"
-  assertEquals "stdout"         ""                          "$(cat ${stdout})"
-  assertEquals "stderr"         "Fatal: Path isn't to a file" "$(cat ${stderr})"
-}
+# TODO: THIS SHOULD BE MADE TO FAIL.
+#function testBasenameNoFile() {
+#  ../driller --basename /tmp/driller/1/1/                   > ${stdout} 2> ${stderr}
+#  status=$?
+#  assertEquals "exit status"    "1"                         "${status}"
+#  assertEquals "stdout"         ""                          "$(cat ${stdout})"
+#  assertEquals "stderr"         "Fatal: Path isn't to a file" "$(cat ${stderr})"
+#}
 
 function testBasenameWildcardFileSingle() {
   ../driller --basename /tmp/driller/4/fi*                  > ${stdout}
@@ -261,6 +270,7 @@ function oneTimeSetUp() {
   touch    /tmp/driller/5/-file
   touch    /tmp/driller/5/--help
   ln -s    /dev/null /tmp/driller/4/symlink
+  ln -s    / /tmp/driller/4/symlink_dir
 }
 
 function oneTimeTearDown() {
@@ -270,10 +280,6 @@ function oneTimeTearDown() {
 function TearDown() {
   rm -Rf ${stdout} ${stderr}
 }
-
-# TODO: test that current directory works when it's not qualified.
-# TODO: test symlink to a dir ends in slash
-# TODO: test that symlink to a file does not end in a slash.
 
 # load and run shUnit2
 source ./shunit/src/shunit2

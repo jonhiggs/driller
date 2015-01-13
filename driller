@@ -121,7 +121,7 @@ for path in ${PATH_ARGS}; do
       __clean_path $path
       ;;
     "--basename")
-      __filename $path
+      [[ ! -d $path ]] && __filename $path
       ;;
     "--debug")
       __debug $path
