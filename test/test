@@ -81,7 +81,7 @@ function testAbsoluteSimpleFile() {
 function testAbsoluteFileLooksLikeSwitch() {
   d=$(pwd)
   pushd /tmp/driller/5/ &> /dev/null
-  ${d}/../driller --absolute -file                            > ${stdout} 2> ${stderr}
+  ${d}/../driller --absolute -file                          > ${stdout} 2> ${stderr}
   popd &> /dev/null
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
@@ -124,7 +124,6 @@ function testAbsoluteWildcardFileMulti() {
   assertEquals "stdout"         ""                          "$(cat ${stdout})"
   assertEquals "stderr"         "Fatal: Too many files"     "$(cat ${stderr})"
 }
-
 
 function testAbsoluteComplicatedFile() {
   ../driller --absolute /tmp/driller/1/../1/1/file          > ${stdout}
