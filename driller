@@ -6,7 +6,7 @@ USAGE:
   $(basename -- $0) [OPTION] <dir>
 
 OPTIONS:
-  --absolute                Provide the absolute path.
+  --absolute                Provide the absolute path (default).
   --basename                Provide the filename from a path.
   --dirname                 Provide the dirname from a path.
   --scm-root                Find the scm root (git or hg).
@@ -110,11 +110,13 @@ function fatal() {
 [[ -z $@ ]] && usage
 
 PATH_ARGS=""
-for f in "$@"; do
-  [[ -e "$f" ]] && PATH_ARGS="${PATH_ARGS} $f"
+OPTION="--absolute"
+for a in "$@"; do
+  [[ -e "$a" ]] && PATH_ARGS="${PATH_ARGS} $a"
+  [[ "$a" =~ --[a-z]* ]] && OPTION=$a
 done
 
-for arg in "$@"; do
+for arg in "$OPTION"; do
   case "${arg}" in
     "--absolute")
       for path in ${PATH_ARGS}; do __clean_path $path; done
