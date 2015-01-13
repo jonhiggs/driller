@@ -1,7 +1,14 @@
 # driller
 
-Driller's purpose is to feed it a path and it will return a clean and flattened
-path of the type you desire.
+Driller's purpose is to normalise paths.
+
+- Paths like `/this/is/a/../../path/` will turn into `/this/path/`.
+
+- Directories will always end in a trailing slash, files will never end in a slash.
+
+- Wildcards will be honoured.
+
+- Easily find the root of a Git or Mercurial repository.
 
 
 ## Requirements
@@ -18,7 +25,7 @@ Nothing special...
 
 | Switch     | Description                          |
 |------------|--------------------------------------|
-| --absolute | Provide the absolute path.           |
+| --absolute | Provide the absolute path (default). |
 | --basename | Provide the filename from a path.    |
 | --dirname  | Provide the dirname from a path.     |
 | --scm      | Find the SCM root (git or hg).       |
