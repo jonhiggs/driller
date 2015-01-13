@@ -82,18 +82,18 @@ function scm_root() {
   fatal "SCM dir not found"
 }
 
-function debug() {
-  __path_valid ${PATH_ARG} || fatal "Invalid path"
-  echo "PATH_ARG:${PATH_ARG}"
-  echo "DIR:$(__dirname ${PATH_ARG})"
+function __debug() {
+  __path_valid $1 || fatal "Invalid path"
+  echo "PATH_ARG:$1"
+  echo "DIR:$(__dirname $1)"
 
-  if [[ -d ${PATH_ARG} ]]; then
+  if [[ -d $1 ]]; then
     echo "FILE:"
   else
-    echo "FILE:$(__filename ${PATH_ARG})"
+    echo "FILE:$(__filename $1)"
   fi
 
-  echo "FLAT_PATH:$(__clean_path ${PATH_ARG})"
+  echo "FLAT_PATH:$(__clean_path $1)"
   exit 0
 }
 
@@ -107,27 +107,29 @@ function fatal() {
   exit 1
 }
 
-PATH_ARG=$(eval "echo \$$#")                    # the last argument is the file
-[[ "${PATH_ARG}" =~ --.* ]] && usage
-[[ "${PATH_ARG}" == $0 ]] && usage
-set -- $(echo $@ | sed -E "s#${PATH_ARG}\$##")
+[[ -z $@ ]] && usage
+
+PATH_ARGS=""
+for f in "$@"; do
+  [[ -e "$f" ]] && PATH_ARGS="${PATH_ARGS} $f"
+done
 
 for arg in "$@"; do
   case "${arg}" in
     "--absolute")
-      __clean_path ${PATH_ARG}
+      for path in ${PATH_ARGS}; do __clean_path $path; done
       ;;
     "--basename")
-      __filename ${PATH_ARG}
+      for path in ${PATH_ARGS}; do __filename $path; done
       ;;
     "--debug")
-      debug
+      for path in ${PATH_ARGS}; do __debug $path; done
       ;;
     "--dirname")
-      __dirname ${PATH_ARG}
+      for path in ${PATH_ARGS}; do __dirname $path; done
       ;;
     "--scm-root")
-      scm_root ${PATH_ARG}
+      for path in ${PATH_ARGS}; do scm_root $path; done
       ;;
     "--help")
       usage

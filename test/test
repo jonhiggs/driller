@@ -32,8 +32,9 @@ function testDebugDir() {
 function testDebugNonDir() {
   ../driller --debug /tmp/driller/3/3/../1                  > ${stdout} 2> ${stderr}
   status=$?
-  assertEquals "exit status"    "1"                         "${status}"
-  assertEquals "stderr"         "Fatal: Invalid path"       "$(cat ${stderr})"
+  assertEquals "exit status"    "0"                         "${status}"
+  assertEquals "stdout"         ""                          "$(cat ${stdout})"
+  assertEquals "stderr"         ""                          "$(cat ${stderr})"
 }
 
 function testAbsoluteSimpleDir() {
@@ -120,9 +121,10 @@ function testAbsoluteWildcardFileSingle() {
 function testAbsoluteWildcardFileMulti() {
   ../driller --absolute /tmp/driller/4/*                    > ${stdout} 2> ${stderr}
   status=$?
-  assertEquals "exit status"    "1"                         "${status}"
-  assertEquals "stdout"         ""                          "$(cat ${stdout})"
-  assertEquals "stderr"         "Fatal: Too many files"     "$(cat ${stderr})"
+  assertEquals "exit status"    "0"                         "${status}"
+  assertEquals "stdout"         "/tmp/driller/4/file
+/tmp/driller/4/link
+/tmp/driller/4/symlink"                          "$(cat ${stdout})"
 }
 
 function testAbsoluteComplicatedFile() {
@@ -204,6 +206,23 @@ function testBasenameNoFile() {
   assertEquals "stdout"         ""                          "$(cat ${stdout})"
   assertEquals "stderr"         "Fatal: Path isn't to a file" "$(cat ${stderr})"
 }
+
+function testBasenameWildcardFileSingle() {
+  ../driller --basename /tmp/driller/4/fi*                  > ${stdout}
+  status=$?
+  assertEquals "exit status"    "0"                         "${status}"
+  assertEquals "stdout"         "file"                      "$(cat ${stdout})"
+}
+
+function testBasenameWildcardFileMulti() {
+  ../driller --basename /tmp/driller/4/*                    > ${stdout} 2> ${stderr}
+  status=$?
+  assertEquals "exit status"    "0"                         "${status}"
+  assertEquals "stdout"         "file
+link
+symlink"                          "$(cat ${stdout})"
+}
+
 
 function oneTimeSetUp() {
   running_dir=$(pwd)
