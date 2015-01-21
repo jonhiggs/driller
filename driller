@@ -26,7 +26,14 @@ function __strip_extraneous_slashes() {
 function __dereference() {
   read <<< $@
   path=$(readlink ${1:-$(cat /dev/stdin)})
-  until [[ ! -L ${path} ]]; do path=$(readlink ${path}); done
+  count=0
+
+  while [[ -L ${path} ]]; do
+    path=$(readlink ${path})
+    if [[ ${count} -gt 30 ]]; then fatal "Symlink loop."; fi
+    count=$(( ${count} + 1 ))
+  done
+
   echo ${path}
 }
 
@@ -97,7 +104,7 @@ PATH_ARGS=""
 OPTION="--absolute"
 
 for a in "$@"; do
-  if [[ -e "$a" ]]; then
+  if [[ -e "$a" ]] || [[ -L "$a" ]]; then
     PATH_ARGS="${PATH_ARGS} $a"
   elif [[ "$a" =~ ^--[a-z\-]+$ ]]; then
     OPTION=$a
