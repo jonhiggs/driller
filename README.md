@@ -27,7 +27,7 @@ Nothing special...
 |---------------|-----------------------------------------|
 | --absolute    | Provide the absolute path (default).    |
 | --basename    | Provide the filename from a path.       |
-| --dereference | vide the filename from a path.          |
+| --dereference | Find the source path of a symlink.      |
 | --dirname     | Provide the dirname from a path.        |
 | --parent      | Return clean path of parent directory.  |
 | --scm         | Find the SCM root (git or hg).          |
