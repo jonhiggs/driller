@@ -108,7 +108,7 @@ OPTION="--absolute"
 
 for a in "$@"; do
   if [[ -e "$a" ]] || [[ -L "$a" ]]; then
-    PATH_ARGS="${PATH_ARGS} $a"
+    PATH_ARGS="${PATH_ARGS} $(__clean_path $a)"
   elif [[ "$a" =~ ^--[a-z\-]+$ ]]; then
     OPTION=$a
   fi
@@ -116,7 +116,7 @@ done
 
 for path in ${PATH_ARGS}; do
   case "${OPTION}" in
-    "--absolute")             __clean_path $path                    ;;
+    "--absolute")             echo $path                    ;;
     "--basename")             [[ ! -d $path ]] && __filename $path  ;;
     "--dereference")          __dereference $path                   ;;
     "--dirname")              __dirname $path                       ;;
