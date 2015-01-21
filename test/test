@@ -226,6 +226,19 @@ link
 symlink"                          "$(cat ${stdout})"
 }
 
+function testParentFileSingle() {
+  ../driller --parent /tmp/driller/4/file                   > ${stdout}
+  status=$?
+  assertEquals "exit status"    "0"                         "${status}"
+  assertEquals "stdout"         "/tmp/driller/"             "$(cat ${stdout})"
+}
+
+function testParentDirectorySingle() {
+  ../driller --parent /tmp/driller/4/                       > ${stdout}
+  status=$?
+  assertEquals "exit status"    "0"                         "${status}"
+  assertEquals "stdout"         "/tmp/driller/"             "$(cat ${stdout})"
+}
 
 function oneTimeSetUp() {
   running_dir=$(pwd)

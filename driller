@@ -9,8 +9,9 @@ OPTIONS:
   --absolute                Provide the absolute path (default).
   --basename                Provide the filename from a path.
   --dirname                 Provide the dirname from a path.
-  --scm-root                Find the scm root (git or hg).
   --help                    This help.
+  --parent                  Return clean path of parent directory /../
+  --scm-root                Find the scm root (git or hg).
 
 EOF
   exit 0
@@ -42,11 +43,17 @@ function __clean_path() {
 }
 
 function __dirname() {
-  if [[ -d $1 ]]; then
-    __clean_path $1
+  read <<< $@
+  in=${1:-$(cat /dev/stdin)}
+  if [[ -d $in ]]; then
+    __clean_path $in
   else
-    dirname -- $1 | __clean_path
+    dirname -- $in | __clean_path
   fi
+}
+
+function __parent() {
+  echo "$(__dirname $1)../" | __clean_path
 }
 
 function __filename() {
@@ -91,26 +98,14 @@ done
 
 for path in ${PATH_ARGS}; do
   case "${OPTION}" in
-    "--absolute")
-      __clean_path $path
-      ;;
-    "--basename")
-      [[ ! -d $path ]] && __filename $path
-      ;;
-    "--debug")
-      __debug $path
-      ;;
-    "--dirname")
-      __dirname $path
-      ;;
-    "--scm"|"--scm-root")
-      __scm_root $path
-      ;;
+    "--absolute")             __clean_path $path                    ;;
+    "--basename")             [[ ! -d $path ]] && __filename $path  ;;
+    "--dirname")              __dirname $path                       ;;
+    "--parent")               __parent $path                        ;;
+    "--scm"|"--scm-root")     __scm_root $path                      ;;
   esac
 done
 
 case "${OPTION}" in
-  "--help")
-    usage
-    ;;
+  "--help")                   usage                                 ;;
 esac
