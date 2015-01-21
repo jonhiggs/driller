@@ -16,11 +16,6 @@ EOF
   exit 0
 }
 
-function __path_valid() {
-  [[ -e $1 ]]
-  return $?
-}
-
 function __strip_extraneous_slashes() {
   echo $1 | sed -E 's#/+#/#g'
 }
@@ -28,7 +23,6 @@ function __strip_extraneous_slashes() {
 function __qualify_dot_dot_slashes() {
   if [[ -d $1 ]]; then
     dir=$1
-    file=""
   else
     dir=$(dirname -- $1)
     file=$(basename -- $1)
@@ -38,20 +32,10 @@ function __qualify_dot_dot_slashes() {
   echo $(pwd)/${file}
 }
 
-function __add_trailing_slash() {
-  if [[ -d $1 ]]; then
-    echo $1 | sed -E 's#/?$#/#'   # a single trailing slash on directories.
-  else
-    echo $1 | sed -E 's#/?$##'    # no trailing slash on files.
-  fi
-}
-
 function __clean_path() {
   path=$1
-  __path_valid ${path} || fatal "Invalid path"
   path=$(__qualify_dot_dot_slashes ${path})
   path=$(__strip_extraneous_slashes ${path})
-  path=$(__add_trailing_slash ${path})
   echo ${path}
 }
 
@@ -83,7 +67,7 @@ function __scm_root() {
 }
 
 function __debug() {
-  __path_valid $1 || fatal "Invalid path"
+  [[ -e "${path}" ]] || fatal "Invalid path"
   echo "PATH_ARG:$1"
   echo "DIR:$(__dirname $1)"
 
