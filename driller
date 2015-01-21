@@ -25,11 +25,11 @@ function __strip_extraneous_slashes() {
 
 function __dereference() {
   read <<< $@
-  path=$(readlink ${1:-$(cat /dev/stdin)})
+  path=$(readlink ${@:-$(cat /dev/stdin)})
   count=0
 
   while [[ -L ${path} ]]; do
-    if [[ ${count} -gt 30 ]]; then 
+    if [[ ${count} -gt 30 ]]; then
       fatal "Symlink loop."
     else
       path=$(readlink ${path})
@@ -57,12 +57,12 @@ function __qualify_dot_dot_slashes() {
 
 function __clean_path() {
   read <<< $@
-  echo ${1:-$(cat /dev/stdin)} | __qualify_dot_dot_slashes | __strip_extraneous_slashes
+  echo ${@:-$(cat /dev/stdin)} | __qualify_dot_dot_slashes | __strip_extraneous_slashes
 }
 
 function __dirname() {
   read <<< $@
-  in=${1:-$(cat /dev/stdin)}
+  in=${@:-$(cat /dev/stdin)}
   if [[ -d $in ]]; then
     __clean_path $in
   else
