@@ -51,7 +51,7 @@ function __qualify_dot_dot_slashes() {
     file=$(basename -- ${stdin})
   fi
 
-  cd ${dir}
+  cd "${dir}"
   echo $(pwd)/${file}
 }
 
