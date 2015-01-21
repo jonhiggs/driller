@@ -17,15 +17,19 @@ EOF
 }
 
 function __strip_extraneous_slashes() {
-  echo $1 | sed -E 's#/+#/#g'
+  read <<< $@
+  cat /dev/stdin | sed -E 's#/+#/#g'
 }
 
 function __qualify_dot_dot_slashes() {
-  if [[ -d $1 ]]; then
-    dir=$1
+  read <<< $@
+  stdin=$(cat /dev/stdin)
+
+  if [[ -d ${stdin} ]]; then
+    dir=${stdin}
   else
-    dir=$(dirname -- $1)
-    file=$(basename -- $1)
+    dir=$(dirname -- ${stdin})
+    file=$(basename -- ${stdin})
   fi
 
   cd ${dir}
@@ -33,10 +37,7 @@ function __qualify_dot_dot_slashes() {
 }
 
 function __clean_path() {
-  path=$1
-  path=$(__qualify_dot_dot_slashes ${path})
-  path=$(__strip_extraneous_slashes ${path})
-  echo ${path}
+  echo $1 | __qualify_dot_dot_slashes | __strip_extraneous_slashes
 }
 
 function __dirname() {
