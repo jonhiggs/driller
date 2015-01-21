@@ -223,15 +223,6 @@ function testBasenameRelative() {
   assertEquals "stdout"         "test"                      "$(cat ${stdout})"
 }
 
-# TODO: THIS SHOULD BE MADE TO FAIL.
-#function testBasenameNoFile() {
-#  ../driller --basename /tmp/driller/1/1/                   > ${stdout} 2> ${stderr}
-#  status=$?
-#  assertEquals "exit status"    "1"                         "${status}"
-#  assertEquals "stdout"         ""                          "$(cat ${stdout})"
-#  assertEquals "stderr"         "Fatal: Path isn't to a file" "$(cat ${stderr})"
-#}
-
 function testBasenameWildcardFileSingle() {
   ../driller --basename /tmp/driller/4/fi*                  > ${stdout}
   status=$?
