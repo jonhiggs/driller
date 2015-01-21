@@ -23,10 +23,16 @@ Nothing special...
 
 ## Options
 
-| Switch     | Description                             |
-|------------|-----------------------------------------|
-| --absolute | Provide the absolute path (default).    |
-| --basename | Provide the filename from a path.       |
-| --dirname  | Provide the dirname from a path.        |
-| --scm      | Find the SCM root (git or hg).          |
-| --parent   | Return clean path of parent directory.  |
+| Switch        | Description                             |
+|---------------|-----------------------------------------|
+| --absolute    | Provide the absolute path (default).    |
+| --basename    | Provide the filename from a path.       |
+| --dereference | vide the filename from a path.          |
+| --dirname     | Provide the dirname from a path.        |
+| --parent      | Return clean path of parent directory.  |
+| --scm         | Find the SCM root (git or hg).          |
+
+
+## Notes
+
+1. `--dereference` is the same as the `--canonicalize` option in GNU readlink. Most helpful if you only have only have the BSD readlink.

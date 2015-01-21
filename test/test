@@ -223,7 +223,7 @@ function testBasenameWildcardFileMulti() {
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "file
 link
-symlink"                          "$(cat ${stdout})"
+symlink"                        "$(cat ${stdout})"
 }
 
 function testParentFileSingle() {
@@ -239,6 +239,42 @@ function testParentDirectorySingle() {
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/tmp/driller/"             "$(cat ${stdout})"
 }
+
+function testDereferenceSymlinkSingle() {
+  ../driller --dereference /tmp/driller/6/symlink           > ${stdout}
+  status=$?
+  assertEquals "exit status"    "0"                         "${status}"
+  assertEquals "stdout"         "/dev/null"                 "$(cat ${stdout})"
+}
+
+function testDereferenceSymlinkMultiple() {
+  ../driller --dereference /tmp/driller/6/symlink2symlink   > ${stdout}
+  status=$?
+  assertEquals "exit status"    "0"                         "${status}"
+  assertEquals "stdout"         "/dev/null"                 "$(cat ${stdout})"
+}
+
+#function testDereferenceSymlinkLoop() {
+#  ../driller --dereference /tmp/driller/6/symlink2symlink   > ${stdout}
+#  status=$?
+#  assertEquals "exit status"    "0"                         "${status}"
+#  assertEquals "stdout"         "/dev/null"                 "$(cat ${stdout})"
+#}
+#
+#function testDereferenceHardlinkSingle() {
+#  ../driller --dereference /tmp/driller/6/hardlink          > ${stdout}
+#  status=$?
+#  assertEquals "exit status"    "0"                         "${status}"
+#  assertEquals "stdout"         "/dev/null"                 "$(cat ${stdout})"
+#}
+#
+#function testDereferenceHardlinkMultiple() {
+#  ../driller --dereference /tmp/driller/6/hardlink2hardlink > ${stdout}
+#  status=$?
+#  assertEquals "exit status"    "0"                         "${status}"
+#  assertEquals "stdout"         "/dev/null"                 "$(cat ${stdout})"
+#}
+#
 
 function oneTimeSetUp() {
   running_dir=$(pwd)
@@ -260,6 +296,9 @@ function oneTimeSetUp() {
   touch    /tmp/driller/5/--help
   ln -s    /dev/null /tmp/driller/4/symlink
   ln -s    / /tmp/driller/4/symlink_dir
+  mkdir -p /tmp/driller/6
+  ln -s    /dev/null /tmp/driller/6/symlink
+  ln -s    /tmp/driller/6/symlink /tmp/driller/6/symlink2symlink
 }
 
 function oneTimeTearDown() {

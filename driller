@@ -8,6 +8,7 @@ USAGE:
 OPTIONS:
   --absolute                Provide the absolute path (default).
   --basename                Provide the filename from a path.
+  --dereference             Dereference a link all the way down to it's source.
   --dirname                 Provide the dirname from a path.
   --help                    This help.
   --parent                  Return clean path of parent directory /../
@@ -20,6 +21,13 @@ EOF
 function __strip_extraneous_slashes() {
   read <<< $@
   cat /dev/stdin | sed -E 's#/+#/#g'
+}
+
+function __dereference() {
+  read <<< $@
+  path=$(readlink ${1:-$(cat /dev/stdin)})
+  until [[ ! -L ${path} ]]; do path=$(readlink ${path}); done
+  echo ${path}
 }
 
 function __qualify_dot_dot_slashes() {
@@ -100,6 +108,7 @@ for path in ${PATH_ARGS}; do
   case "${OPTION}" in
     "--absolute")             __clean_path $path                    ;;
     "--basename")             [[ ! -d $path ]] && __filename $path  ;;
+    "--dereference")          __dereference $path                   ;;
     "--dirname")              __dirname $path                       ;;
     "--parent")               __parent $path                        ;;
     "--scm"|"--scm-root")     __scm_root $path                      ;;
