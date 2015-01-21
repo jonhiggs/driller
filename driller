@@ -20,7 +20,7 @@ EOF
 
 function __strip_extraneous_slashes() {
   read <<< $@
-  cat /dev/stdin | sed -E 's#/+#/#g'
+  echo "${@:-$(cat /dev/stdin)}" | sed -E 's#/+#/#g'
 }
 
 function __dereference() {
