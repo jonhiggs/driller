@@ -126,7 +126,7 @@ function testAbsoluteWildcardFileMulti() {
   assertEquals "stdout"         "/tmp/driller/4/file
 /tmp/driller/4/link
 /tmp/driller/4/symlink
-/tmp/driller/4/symlink_dir/"                          "$(cat ${stdout})"
+/tmp/driller/4/symlink_dir/"                                "$(cat ${stdout})"
 }
 
 function testAbsoluteComplicatedFile() {
@@ -137,28 +137,28 @@ function testAbsoluteComplicatedFile() {
 }
 
 function testScmRootGitSimpleDir() {
-  ../driller --scm /tmp/driller/2/1                    > ${stdout}
+  ../driller --scm /tmp/driller/2/1                         > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/tmp/driller/2/"           "$(cat ${stdout})"
 }
 
 function testScmRootGitSimpleFile() {
-  ../driller --scm /tmp/driller/2/file                 > ${stdout}
+  ../driller --scm /tmp/driller/2/file                      > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/tmp/driller/2/"           "$(cat ${stdout})"
 }
 
 function testScmRootHgSimpleDir() {
-  ../driller --scm /tmp/driller/3/1                    > ${stdout}
+  ../driller --scm /tmp/driller/3/1                         > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/tmp/driller/3/"           "$(cat ${stdout})"
 }
 
 function testScmRootHgSimpleFile() {
-  ../driller --scm /tmp/driller/3/file                 > ${stdout} 2> ${stderr}
+  ../driller --scm /tmp/driller/3/file                      > ${stdout} 2> ${stderr}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/tmp/driller/3/"           "$(cat ${stdout})"
@@ -166,7 +166,7 @@ function testScmRootHgSimpleFile() {
 }
 
 function testScmRootHitRoot() {
-  ../driller --scm ${HOME}                             > ${stdout} 2> ${stderr}
+  ../driller --scm ${HOME}                                  > ${stdout} 2> ${stderr}
   status=$?
   assertEquals "exit status"    "1"                         "${status}"
   assertEquals "stderr"         "Fatal: SCM dir not found"  "$(cat ${stderr})"
