@@ -37,14 +37,15 @@ function __qualify_dot_dot_slashes() {
 }
 
 function __clean_path() {
-  echo $1 | __qualify_dot_dot_slashes | __strip_extraneous_slashes
+  read <<< $@
+  echo ${1:-$(cat /dev/stdin)} | __qualify_dot_dot_slashes | __strip_extraneous_slashes
 }
 
 function __dirname() {
   if [[ -d $1 ]]; then
     __clean_path $1
   else
-    __clean_path $(dirname -- $1)
+    dirname -- $1 | __clean_path
   fi
 }
 
@@ -60,7 +61,11 @@ function __scm_dir() {
 function __scm_root() {
   dir=$(__dirname $1)
   until [[ ${dir} == "/" ]]; do
-    __scm_dir ${dir} && __clean_path ${dir} && return 0
+    if __scm_dir ${dir}; then
+      __clean_path ${dir}
+      return 0
+    fi
+
     dir="$(__clean_path ${dir}/../)"
   done
 
