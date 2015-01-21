@@ -105,16 +105,18 @@ function fatal() {
 [[ -z $@ ]] && usage
 PATH_ARGS=""
 OPTION="--absolute"
+PATH_ARGS=()
 
 for a in "$@"; do
   if [[ -e "$a" ]] || [[ -L "$a" ]]; then
-    PATH_ARGS="${PATH_ARGS} $(__clean_path $a)"
+    PATH_ARGS+=( "$(__clean_path $a)" )
   elif [[ "$a" =~ ^--[a-z\-]+$ ]]; then
     OPTION=$a
   fi
 done
 
-for path in ${PATH_ARGS}; do
+for element in $(seq 0 $((${#PATH_ARGS[@]} - 1))); do
+  path=${PATH_ARGS[$element]}
   case "${OPTION}" in
     "--absolute")             echo $path                    ;;
     "--basename")             [[ ! -d $path ]] && __filename $path  ;;
