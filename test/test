@@ -261,21 +261,6 @@ function testDereferenceSymlinkLoop() {
   assertEquals "stderr"         "Fatal: Symlink loop."      "$(cat ${stderr})"
 }
 
-#function testDereferenceHardlinkSingle() {
-#  ../driller --dereference /tmp/driller/6/hardlink          > ${stdout}
-#  status=$?
-#  assertEquals "exit status"    "0"                         "${status}"
-#  assertEquals "stdout"         "/dev/null"                 "$(cat ${stdout})"
-#}
-#
-#function testDereferenceHardlinkMultiple() {
-#  ../driller --dereference /tmp/driller/6/hardlink2hardlink > ${stdout}
-#  status=$?
-#  assertEquals "exit status"    "0"                         "${status}"
-#  assertEquals "stdout"         "/dev/null"                 "$(cat ${stdout})"
-#}
-#
-
 function oneTimeSetUp() {
   running_dir=$(pwd)
   stdout="/tmp/driller/stdout"
@@ -297,6 +282,7 @@ function oneTimeSetUp() {
   ln -s    /dev/null /tmp/driller/4/symlink
   ln -s    / /tmp/driller/4/symlink_dir
   mkdir -p /tmp/driller/6
+  touch    /tmp/driller/6/file
   ln -s    /dev/null /tmp/driller/6/symlink
   ln -s    /tmp/driller/6/symlink /tmp/driller/6/symlink2symlink
   ln -s    /tmp/driller/6/linkloop2 /tmp/driller/6/linkloop1
