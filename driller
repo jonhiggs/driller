@@ -47,8 +47,8 @@ function __qualify_dot_dot_slashes() {
   if [[ -d ${stdin} ]]; then
     dir=${stdin}
   else
-    dir=$(dirname -- ${stdin})
-    file=$(basename -- ${stdin})
+    dir=$(dirname -- "${stdin}")
+    file=$(basename -- "${stdin}")
   fi
 
   cd "${dir}"
@@ -117,6 +117,8 @@ done
 
 for element in $(seq 0 $((${#PATH_ARGS[@]} - 1))); do
   path=${PATH_ARGS[$element]}
+  [[ -z ${path} ]] && break
+
   case "${OPTION}" in
     "--absolute")             echo $path                    ;;
     "--basename")             [[ ! -d $path ]] && __filename $path  ;;

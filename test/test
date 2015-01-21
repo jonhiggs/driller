@@ -62,6 +62,14 @@ function testAbsoluteSimpleFile() {
   assertEquals "stdout"         "/tmp/driller/1/1/file"     "$(cat ${stdout})"
 }
 
+function testAbsoluteSimpleFileWithSpaces() {
+  ../driller --absolute /tmp/driller/1/a\ file\ with\ spaces       > ${stdout}
+  status=$?
+  assertEquals "exit status"    "0"                                     "${status}"
+  assertEquals "stdout"         "/tmp/driller/1/a file with spaces"     "$(cat ${stdout})"
+}
+
+
 function testAbsoluteFileLooksLikeSwitch() {
   d=$(pwd)
   pushd /tmp/driller/5/ &> /dev/null
@@ -129,11 +137,25 @@ function testAbsoluteWildcardFileMulti() {
 /tmp/driller/4/symlink_dir/"                                "$(cat ${stdout})"
 }
 
-function testAbsoluteComplicatedFile() {
+function testAbsoluteComplicatedFile1() {
   ../driller --absolute /tmp/driller/1/../1/1/file          > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/tmp/driller/1/1/file"     "$(cat ${stdout})"
+}
+
+function testAbsoluteComplicatedFile2() {
+  ../driller --absolute /tmp/driller/1/../1/a\ file\ with\ spaces       > ${stdout}
+  status=$?
+  assertEquals "exit status"    "0"                                     "${status}"
+  assertEquals "stdout"         "/tmp/driller/1/a file with spaces"     "$(cat ${stdout})"
+}
+
+function testAbsoluteComplicatedFile3() {
+  ../driller --absolute "/tmp/driller/1/../1/a file with spaces"        > ${stdout}
+  status=$?
+  assertEquals "exit status"    "0"                                     "${status}"
+  assertEquals "stdout"         "/tmp/driller/1/a file with spaces"     "$(cat ${stdout})"
 }
 
 function testScmRootGitSimpleDir() {
@@ -267,6 +289,7 @@ function oneTimeSetUp() {
   stderr="/tmp/driller/stderr"
   mkdir -p /tmp/driller/1/1
   touch    /tmp/driller/1/1/file
+  touch    "/tmp/driller/1/a file with spaces"
   mkdir -p /tmp/driller/2/1
   mkdir -p /tmp/driller/2/.git
   touch    /tmp/driller/2/file
