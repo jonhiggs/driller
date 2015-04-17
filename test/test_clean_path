@@ -1,0 +1,48 @@
+function __run() {
+  ${driller} --dereference $@ > ${stdout_file} 2> ${stderr_file}
+  status=$?
+  stdout=$(cat ${stdout_file})
+  stderr=$(cat ${stderr_file})
+}
+
+function testRelativeToSource() {
+  # make sure paths are taken relative to the source, not the pwd.
+  cd /tmp/driller/
+  __run ./2/symlink
+  assertEquals "stdout"         "/tmp/driller/1/file"       "$stdout"
+  assertEquals "stderr"         ""                          "$stderr"
+  assertEquals "exit status"    "0"                         "$status"
+}
+
+function oneTimeSetUp() {
+  running_dir=$(pwd)
+  driller="${running_dir}/../driller"
+  stdout_file="/tmp/driller/stdout"
+  stderr_file="/tmp/driller/stderr"
+
+  mkdir -p /tmp/driller/1/ /tmp/driller/2
+  touch /tmp/driller/1/file
+  pushd /tmp/driller/2 &> /dev/null
+  ln -s ../1/file symlink
+  popd &> /dev/null
+}
+
+function oneTimeTearDown() {
+  rm -Rf /tmp/driller
+  rm -Rf ${home_tmp}
+  rm -f ${HOME}/.driller_tmpfile
+}
+
+function tearDown() {
+  rm -Rf ${stdout_file} ${stderr_file}
+}
+
+function setUp() {
+  cd ${running_dir}
+}
+
+
+# load and run shUnit2
+source ./shunit/src/shunit2
+
+# vim: ai ts=2 sw=2 et sts=2 ft=sh

@@ -24,6 +24,7 @@ function __strip_extraneous_slashes() {
 
 function __dereference() {
   read <<< $@
+  working_dir=$(dirname ${@:-$(cat /dev/stdin)})
   path=$(readlink ${@:-$(cat /dev/stdin)} || echo $@)
   count=0
 
@@ -36,7 +37,9 @@ function __dereference() {
     fi
   done
 
+  pushd ${working_dir} > /dev/null
   __clean_path ${path}
+  popd > /dev/null
 }
 
 function __qualify_dot_dot_slashes() {
