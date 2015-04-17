@@ -299,6 +299,14 @@ function testDereferenceSymlinkLoop() {
   assertEquals "stderr"         "Fatal: Symlink loop."      "$(cat ${stderr})"
 }
 
+function testHomeAbsoluteDir() {
+  ${driller} ${HOME}/.driller_tmp          > ${stdout}
+  status=$?
+  assertEquals "exit status"    "0"               "${status}"
+  assertEquals "stdout"         "${HOME}/.driller_tmp/" "$(cat ${stdout})"
+}
+
+
 function oneTimeSetUp() {
   running_dir=$(pwd)
   driller="${running_dir}/../driller"
@@ -328,10 +336,14 @@ function oneTimeSetUp() {
   ln -s    /tmp/driller/6/symlink /tmp/driller/6/symlink2symlink
   ln -s    /tmp/driller/6/linkloop2 /tmp/driller/6/linkloop1
   ln -s    /tmp/driller/6/linkloop1 /tmp/driller/6/linkloop2
+
+  home_tmp="${HOME}/.driller_tmp"
+  mkdir ${home_tmp}
 }
 
 function oneTimeTearDown() {
   rm -Rf /tmp/driller
+  rm -Rf ${home_tmp}
 }
 
 function tearDown() {
