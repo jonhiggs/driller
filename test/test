@@ -267,6 +267,20 @@ function testDereferenceSymlinkMultiple() {
   assertEquals "stdout"         "/dev/null"                 "$(cat ${stdout})"
 }
 
+function testDereferenceNonLinkDir() {
+  ../driller --dereference /tmp/driller/6/ > ${stdout}
+  status=$?
+  assertEquals "exit status"    "0"                         "${status}"
+  assertEquals "stdout"         "/tmp/driller/6/"           "$(cat ${stdout})"
+}
+
+function testDereferenceNonLinkFile() {
+  ../driller --dereference /tmp/driller/6/file > ${stdout}
+  status=$?
+  assertEquals "exit status"    "0"                         "${status}"
+  assertEquals "stdout"         "/tmp/driller/6/file"       "$(cat ${stdout})"
+}
+
 function testDereferenceSymlinkLoop() {
   ../driller --dereference /tmp/driller/6/linkloop1         > ${stdout} 2> ${stderr}
   status=$?

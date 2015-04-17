@@ -25,7 +25,7 @@ function __strip_extraneous_slashes() {
 
 function __dereference() {
   read <<< $@
-  path=$(readlink ${@:-$(cat /dev/stdin)})
+  path=$(readlink ${@:-$(cat /dev/stdin)} || echo $@)
   count=0
 
   while [[ -L ${path} ]]; do
