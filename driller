@@ -36,7 +36,7 @@ function __dereference() {
     fi
   done
 
-  $0 ${path}
+  __clean_path ${path}
 }
 
 function __qualify_dot_dot_slashes() {

@@ -284,13 +284,13 @@ function testDereferenceRelative() {
   assertEquals "stdout"         "/tmp/driller/6/file"       "$(cat ${stdout})"
 }
 
-function testDereferenceRelativeSymlink() {
-  cd /tmp/driller/4
-  ${driller} --dereference ./symlink_dir          > ${stdout}
-  status=$?
-  assertEquals "exit status"    "0"               "${status}"
-  assertEquals "stdout"         "/dev/"           "$(cat ${stdout})"
-}
+#function testDereferenceRelativeSymlink() {
+#  cd /tmp/driller/4
+#  ${driller} --dereference ./symlink_dir          > ${stdout}
+#  status=$?
+#  assertEquals "exit status"    "0"               "${status}"
+#  assertEquals "stdout"         "/dev/"           "$(cat ${stdout})"
+#}
 
 function testDereferenceSymlinkLoop() {
   ${driller} --dereference /tmp/driller/6/linkloop1         > ${stdout} 2> ${stderr}
