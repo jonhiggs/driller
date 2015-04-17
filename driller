@@ -11,7 +11,6 @@ OPTIONS:
   --dereference             Dereference a link all the way down to it's source.
   --dirname                 Provide the dirname from a path.
   --help                    This help.
-  --parent                  Return clean path of parent directory /../
   --scm-root                Find the scm root (git or hg).
 
 EOF
@@ -70,10 +69,6 @@ function __dirname() {
   fi
 }
 
-function __parent() {
-  echo "$(__dirname $1)../" | __clean_path
-}
-
 function __filename() {
   [[ -e $1 ]] && [[ ! -d $1 ]] || fatal "Path isn't to a file"
   basename -- $(__clean_path $1)
@@ -125,7 +120,6 @@ for element in $(seq 0 $((${#PATH_ARGS[@]} - 1))); do
     "--basename")             [[ ! -d $path ]] && __filename $path  ;;
     "--dereference")          __dereference $path                   ;;
     "--dirname")              __dirname $path                       ;;
-    "--parent")               __parent $path                        ;;
     "--scm"|"--scm-root")     __scm_root $path                      ;;
   esac
 done
