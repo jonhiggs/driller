@@ -330,9 +330,14 @@ function oneTimeTearDown() {
   rm -Rf /tmp/driller
 }
 
-function TearDown() {
+function tearDown() {
   rm -Rf ${stdout} ${stderr}
 }
+
+function setUp() {
+  cd ${running_dir}
+}
+
 
 # load and run shUnit2
 source ./shunit/src/shunit2
