@@ -289,6 +289,15 @@ function testDereferenceNonLinkFile() {
   assertEquals "stdout"         "/tmp/driller/6/file"       "$(cat ${stdout})"
 }
 
+function testDereferenceRelative() {
+  cd /tmp/driller/6/
+  ln -s file relative_symlink
+  ${running_dir}/../driller --dereference ./relative_symlink > ${stdout} 2> ${stderr}
+  status=$?
+  assertEquals "exit status"    "0"                         "${status}"
+  assertEquals "stdout"         "/tmp/driller/6/file"       "$(cat ${stdout})"
+}
+
 function testDereferenceSymlinkLoop() {
   ../driller --dereference /tmp/driller/6/linkloop1         > ${stdout} 2> ${stderr}
   status=$?

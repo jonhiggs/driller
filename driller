@@ -37,7 +37,7 @@ function __dereference() {
     fi
   done
 
-  echo ${path}
+  $0 ${path}
 }
 
 function __qualify_dot_dot_slashes() {
