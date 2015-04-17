@@ -298,6 +298,14 @@ function testDereferenceRelative() {
   assertEquals "stdout"         "/tmp/driller/6/file"       "$(cat ${stdout})"
 }
 
+function testDereferenceRelativeSymlink() {
+  cd /tmp/driller/4
+  ${driller} --dereference ./symlink_dir          > ${stdout}
+  status=$?
+  assertEquals "exit status"    "0"               "${status}"
+  assertEquals "stdout"         "/dev/"           "$(cat ${stdout})"
+}
+
 function testDereferenceSymlinkLoop() {
   ${driller} --dereference /tmp/driller/6/linkloop1         > ${stdout} 2> ${stderr}
   status=$?
@@ -326,7 +334,7 @@ function oneTimeSetUp() {
   touch    /tmp/driller/5/-file
   touch    /tmp/driller/5/--help
   ln -s    /dev/null /tmp/driller/4/symlink
-  ln -s    / /tmp/driller/4/symlink_dir
+  ln -s    /dev/ /tmp/driller/4/symlink_dir
   mkdir -p /tmp/driller/6
   touch    /tmp/driller/6/file
   ln -s    /dev/null /tmp/driller/6/symlink
