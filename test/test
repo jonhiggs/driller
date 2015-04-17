@@ -1,69 +1,69 @@
 #!/bin/bash
 function testHelp() {
-  ../driller --help                                         > ${stdout}
+  ${driller} --help                                         > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "USAGE:"                    "$(head -n1 ${stdout})"
 }
 
 function testNoArg() {
-  ../driller                                                > ${stdout}
+  ${driller}                                                > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "USAGE:"                    "$(head -n1 ${stdout})"
 }
 
 function testNoOption() {
-  ../driller /tmp/driller/1/                                > ${stdout}
+  ${driller} /tmp/driller/1/                                > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/tmp/driller/1/"           "$(cat ${stdout})"
 }
 
 function testAbsoluteSimpleDir() {
-  ../driller --absolute /tmp/driller/1                      > ${stdout}
+  ${driller} --absolute /tmp/driller/1                      > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/tmp/driller/1/"           "$(cat ${stdout})"
 }
 
 function testAbsoluteComplicatedDir() {
-  ../driller --absolute /tmp/driller/1/1/../                > ${stdout}
+  ${driller} --absolute /tmp/driller/1/1/../                > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/tmp/driller/1/"           "$(cat ${stdout})"
 }
 
 function testAbsoluteWeirdRoot1() {
-  ../driller --absolute //..//                              > ${stdout}
+  ${driller} --absolute //..//                              > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/"                         "$(cat ${stdout})"
 }
 
 function testAbsoluteWeirdRoot2() {
-  ../driller --absolute //////                              > ${stdout}
+  ${driller} --absolute //////                              > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/"                         "$(cat ${stdout})"
 }
 
 function testAbsoluteWeirdRoot3() {
-  ../driller --absolute /./..///                            > ${stdout}
+  ${driller} --absolute /./..///                            > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/"                         "$(cat ${stdout})"
 }
 
 function testAbsoluteSimpleFile() {
-  ../driller --absolute /tmp/driller/1/1/file               > ${stdout}
+  ${driller} --absolute /tmp/driller/1/1/file               > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/tmp/driller/1/1/file"     "$(cat ${stdout})"
 }
 
 function testAbsoluteSimpleFileWithSpaces() {
-  ../driller --absolute /tmp/driller/1/a\ file\ with\ spaces       > ${stdout}
+  ${driller} --absolute /tmp/driller/1/a\ file\ with\ spaces       > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                                     "${status}"
   assertEquals "stdout"         "/tmp/driller/1/a file with spaces"     "$(cat ${stdout})"
@@ -93,42 +93,42 @@ function testAbsoluteFileLooksLikeHelp() {
 }
 
 function testAbsoluteDeviceFile() {
-  ../driller --absolute /dev/null                           > ${stdout}
+  ${driller} --absolute /dev/null                           > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/dev/null"                 "$(cat ${stdout})"
 }
 
 function testAbsoluteLinkFile() {
-  ../driller --absolute /tmp/driller/4/link                 > ${stdout}
+  ${driller} --absolute /tmp/driller/4/link                 > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/tmp/driller/4/link"       "$(cat ${stdout})"
 }
 
 function testAbsoluteSymlinkFile() {
-  ../driller --absolute /tmp/driller/4/symlink              > ${stdout}
+  ${driller} --absolute /tmp/driller/4/symlink              > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/tmp/driller/4/symlink"    "$(cat ${stdout})"
 }
 
 function testAbsoluteSymlinkDir() {
-  ../driller --absolute /tmp/driller/4/symlink_dir          > ${stdout}
+  ${driller} --absolute /tmp/driller/4/symlink_dir          > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/tmp/driller/4/symlink_dir/"   "$(cat ${stdout})"
 }
 
 function testAbsoluteWildcardFileSingle() {
-  ../driller --absolute /tmp/driller/4/fi*                  > ${stdout}
+  ${driller} --absolute /tmp/driller/4/fi*                  > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/tmp/driller/4/file"       "$(cat ${stdout})"
 }
 
 function testAbsoluteWildcardFileMulti() {
-  ../driller --absolute /tmp/driller/4/*                    > ${stdout} 2> ${stderr}
+  ${driller} --absolute /tmp/driller/4/*                    > ${stdout} 2> ${stderr}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/tmp/driller/4/file
@@ -138,49 +138,49 @@ function testAbsoluteWildcardFileMulti() {
 }
 
 function testAbsoluteComplicatedFile1() {
-  ../driller --absolute /tmp/driller/1/../1/1/file          > ${stdout}
+  ${driller} --absolute /tmp/driller/1/../1/1/file          > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/tmp/driller/1/1/file"     "$(cat ${stdout})"
 }
 
 function testAbsoluteComplicatedFile2() {
-  ../driller --absolute /tmp/driller/1/../1/a\ file\ with\ spaces       > ${stdout}
+  ${driller} --absolute /tmp/driller/1/../1/a\ file\ with\ spaces       > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                                     "${status}"
   assertEquals "stdout"         "/tmp/driller/1/a file with spaces"     "$(cat ${stdout})"
 }
 
 function testAbsoluteComplicatedFile3() {
-  ../driller --absolute "/tmp/driller/1/../1/a file with spaces"        > ${stdout}
+  ${driller} --absolute "/tmp/driller/1/../1/a file with spaces"        > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                                     "${status}"
   assertEquals "stdout"         "/tmp/driller/1/a file with spaces"     "$(cat ${stdout})"
 }
 
 function testScmRootGitSimpleDir() {
-  ../driller --scm /tmp/driller/2/1                         > ${stdout}
+  ${driller} --scm /tmp/driller/2/1                         > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/tmp/driller/2/"           "$(cat ${stdout})"
 }
 
 function testScmRootGitSimpleFile() {
-  ../driller --scm /tmp/driller/2/file                      > ${stdout}
+  ${driller} --scm /tmp/driller/2/file                      > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/tmp/driller/2/"           "$(cat ${stdout})"
 }
 
 function testScmRootHgSimpleDir() {
-  ../driller --scm /tmp/driller/3/1                         > ${stdout}
+  ${driller} --scm /tmp/driller/3/1                         > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/tmp/driller/3/"           "$(cat ${stdout})"
 }
 
 function testScmRootHgSimpleFile() {
-  ../driller --scm /tmp/driller/3/file                      > ${stdout} 2> ${stderr}
+  ${driller} --scm /tmp/driller/3/file                      > ${stdout} 2> ${stderr}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/tmp/driller/3/"           "$(cat ${stdout})"
@@ -188,7 +188,7 @@ function testScmRootHgSimpleFile() {
 }
 
 function testScmRootExternalLink() {
-  ../driller --scm /tmp/driller/6/symlink_to_gitfile        > ${stdout} 2> ${stderr}
+  ${driller} --scm /tmp/driller/6/symlink_to_gitfile        > ${stdout} 2> ${stderr}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/tmp/driller/2/"           "$(cat ${stdout})"
@@ -196,7 +196,7 @@ function testScmRootExternalLink() {
 }
 
 function testScmRootHitRoot() {
-  ../driller --scm ${HOME}                                  > ${stdout} 2> ${stderr}
+  ${driller} --scm ${HOME}                                  > ${stdout} 2> ${stderr}
   status=$?
   assertEquals "exit status"    "1"                         "${status}"
   assertEquals "stderr"         "Fatal: SCM dir not found"  "$(cat ${stderr})"
@@ -204,42 +204,42 @@ function testScmRootHitRoot() {
 }
 
 function testDirnameSimple() {
-  ../driller --dirname /tmp/driller/1/1/file                > ${stdout}
+  ${driller} --dirname /tmp/driller/1/1/file                > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/tmp/driller/1/1/"         "$(cat ${stdout})"
 }
 
 function testDirnameRelative() {
-  ../driller --dirname ./                                   > ${stdout}
+  ${driller} --dirname ./                                   > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "${running_dir}/"           "$(cat ${stdout})"
 }
 
 function testBasenameSimple() {
-  ../driller --basename /tmp/driller/1/1/file               > ${stdout}
+  ${driller} --basename /tmp/driller/1/1/file               > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "file"                      "$(cat ${stdout})"
 }
 
 function testBasenameRelative() {
-  ../driller --basename ./test                              > ${stdout}
+  ${driller} --basename ./test                              > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "test"                      "$(cat ${stdout})"
 }
 
 function testBasenameWildcardFileSingle() {
-  ../driller --basename /tmp/driller/4/fi*                  > ${stdout}
+  ${driller} --basename /tmp/driller/4/fi*                  > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "file"                      "$(cat ${stdout})"
 }
 
 function testBasenameWildcardFileMulti() {
-  ../driller --basename /tmp/driller/4/*                    > ${stdout} 2> ${stderr}
+  ${driller} --basename /tmp/driller/4/*                    > ${stdout} 2> ${stderr}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "file
@@ -248,42 +248,42 @@ symlink"                        "$(cat ${stdout})"
 }
 
 function testParentFileSingle() {
-  ../driller --parent /tmp/driller/4/file                   > ${stdout}
+  ${driller} --parent /tmp/driller/4/file                   > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/tmp/driller/"             "$(cat ${stdout})"
 }
 
 function testParentDirectorySingle() {
-  ../driller --parent /tmp/driller/4/                       > ${stdout}
+  ${driller} --parent /tmp/driller/4/                       > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/tmp/driller/"             "$(cat ${stdout})"
 }
 
 function testDereferenceSymlinkSingle() {
-  ../driller --dereference /tmp/driller/6/symlink           > ${stdout}
+  ${driller} --dereference /tmp/driller/6/symlink           > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/dev/null"                 "$(cat ${stdout})"
 }
 
 function testDereferenceSymlinkMultiple() {
-  ../driller --dereference /tmp/driller/6/symlink2symlink   > ${stdout}
+  ${driller} --dereference /tmp/driller/6/symlink2symlink   > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/dev/null"                 "$(cat ${stdout})"
 }
 
 function testDereferenceNonLinkDir() {
-  ../driller --dereference /tmp/driller/6/ > ${stdout}
+  ${driller} --dereference /tmp/driller/6/ > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/tmp/driller/6/"           "$(cat ${stdout})"
 }
 
 function testDereferenceNonLinkFile() {
-  ../driller --dereference /tmp/driller/6/file > ${stdout}
+  ${driller} --dereference /tmp/driller/6/file > ${stdout}
   status=$?
   assertEquals "exit status"    "0"                         "${status}"
   assertEquals "stdout"         "/tmp/driller/6/file"       "$(cat ${stdout})"
@@ -299,7 +299,7 @@ function testDereferenceRelative() {
 }
 
 function testDereferenceSymlinkLoop() {
-  ../driller --dereference /tmp/driller/6/linkloop1         > ${stdout} 2> ${stderr}
+  ${driller} --dereference /tmp/driller/6/linkloop1         > ${stdout} 2> ${stderr}
   status=$?
   assertEquals "exit status"    "1"                         "${status}"
   assertEquals "stderr"         "Fatal: Symlink loop."      "$(cat ${stderr})"
@@ -307,6 +307,7 @@ function testDereferenceSymlinkLoop() {
 
 function oneTimeSetUp() {
   running_dir=$(pwd)
+  driller="${running_dir}/../driller"
   stdout="/tmp/driller/stdout"
   stderr="/tmp/driller/stderr"
   mkdir -p /tmp/driller/1/1
