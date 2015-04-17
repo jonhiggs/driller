@@ -187,6 +187,14 @@ function testScmRootHgSimpleFile() {
   assertEquals "stderr"         ""                          "$(cat ${stderr})"
 }
 
+function testScmRootExternalLink() {
+  ../driller --scm /tmp/driller/6/symlink_to_gitfile        > ${stdout} 2> ${stderr}
+  status=$?
+  assertEquals "exit status"    "0"                         "${status}"
+  assertEquals "stdout"         "/tmp/driller/2/"           "$(cat ${stdout})"
+  assertEquals "stderr"         ""                          "$(cat ${stderr})"
+}
+
 function testScmRootHitRoot() {
   ../driller --scm ${HOME}                                  > ${stdout} 2> ${stderr}
   status=$?
@@ -312,6 +320,7 @@ function oneTimeSetUp() {
   mkdir -p /tmp/driller/6
   touch    /tmp/driller/6/file
   ln -s    /dev/null /tmp/driller/6/symlink
+  ln -s    /tmp/driller/2/file /tmp/driller/6/symlink_to_gitfile
   ln -s    /tmp/driller/6/symlink /tmp/driller/6/symlink2symlink
   ln -s    /tmp/driller/6/linkloop2 /tmp/driller/6/linkloop1
   ln -s    /tmp/driller/6/linkloop1 /tmp/driller/6/linkloop2

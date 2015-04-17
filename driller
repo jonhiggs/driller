@@ -84,7 +84,8 @@ function __scm_dir() {
 }
 
 function __scm_root() {
-  dir=$(__dirname $1)
+  dereferenced_file=$($0 --dereference $1)
+  dir=$(__dirname ${dereferenced_file})
   until [[ ${dir} == "/" ]]; do
     if __scm_dir ${dir}; then
       __clean_path ${dir}
