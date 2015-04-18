@@ -30,7 +30,11 @@ function testBasename() {
 
   __run --basename ./test
   assertEquals "relative"         "test"                      "$stdout"
+}
 
+function testStdin() {
+  echo "/dev/null" | ${driller} --dirname > ${stdout_file}
+  assertEquals "dirname"         "/dev/"                      "$(cat $stdout_file)"
 }
 
 function oneTimeSetUp() {

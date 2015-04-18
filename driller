@@ -1,5 +1,4 @@
 #!/usr/bin/env bash -e
-
 function usage() {
   cat <<EOF
 USAGE:
@@ -106,7 +105,10 @@ PATH_ARGS=""
 OPTION="--absolute"
 PATH_ARGS=()
 
-for a in "$@"; do
+arguments="$@"
+[[ -p /dev/stdin ]] && arguments="$arguments $(cat /dev/stdin)"
+
+for a in ${arguments}; do
   if [[ -e "$a" ]] || [[ -L "$a" ]]; then
     PATH_ARGS+=( "$(__clean_path $a)" )
   elif [[ "$a" =~ ^--[a-z\-]+$ ]]; then
