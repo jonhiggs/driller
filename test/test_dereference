@@ -1,26 +1,22 @@
-function __run() {
-  ${driller} --dereference $@ > ${stdout_file} 2> ${stderr_file}
-  status=$?
-  stdout=$(cat ${stdout_file})
-  stderr=$(cat ${stderr_file})
-}
+#!/bin/bash
+. functions.inc
 
 function testSymlinkToFile() {
   # A SYMLINK TO A FILE.
 
   # with an absolute path.
-  __run /tmp/driller/6/symlink
+  __run --dereference /tmp/driller/6/symlink
   assertEquals "absolute stdout"         "/dev/null"                 "$stdout"
   assertEquals "absolute exit status"    "0"                         "$status"
 
   # when the symlink contains a relative path to dir
-  __run /tmp/driller/7/symlink
+  __run --dereference /tmp/driller/7/symlink
   assertEquals "relative stdout"         "/tmp/driller/2/"           "$stdout"
   assertEquals "relative exit status"    "0"                         "$status"
 
   # with a relative path.
   #cd ${HOME}
-  #__run ../../tmp/driller/6/symlink
+  #__run --dereference ../../tmp/driller/6/symlink
   #assertEquals "relative stdout"         "/dev/null"                 "$stdout"
   #assertEquals "relative exit status"    "0"                         "$status"
 
@@ -28,31 +24,31 @@ function testSymlinkToFile() {
 
 #function testSymlinkToSymlink() {
 #  # A SYMLINK TO ANOTHER SYMLINK
-#  __run /tmp/driller/6/symlink2symlink
+#  __run --dereference /tmp/driller/6/symlink2symlink
 #  assertEquals "stdout"         "/dev/null"                 "$stdout"
 #  assertEquals "exit status"    "0"                         "$status"
 #}
 #
 #function testDir() {
 #  # A DIRECTORY INSTEAD OF A SYMLINK
-#  __run /tmp/driller/6/
+#  __run --dereference /tmp/driller/6/
 #  assertEquals "stdout"         "/tmp/driller/6/"           "$stdout"
 #  assertEquals "exit status"    "0"                         "$status"
 #}
 #
 #function testFile() {
 #  # A FILE INSTEAD OF A SYMLINK
-#  __run /tmp/driller/6/file
+#  __run --dereference /tmp/driller/6/file
 #  assertEquals "stdout"         "/tmp/driller/6/file"       "$stdout"
 #  assertEquals "exit status"    "0"                         "$status"
 #
-#  #__run ./test
+#  #__run --dereference ./test
 #  #assertEquals "stdout"         "/tmp/driller/6/file"       "$stdout"
 #  #assertEquals "exit status"    "0"                         "$status"
 #}
 #
 #function testLinkLoop() {
-#  __run /tmp/driller/6/linkloop1
+#  __run --dereference /tmp/driller/6/linkloop1
 #  assertEquals "stderr"         "Fatal: Symlink loop."      "$stderr"
 #  assertEquals "exit status"    "1"                         "$status"
 #}
@@ -91,7 +87,7 @@ function oneTimeSetUp() {
   mkdir -p /tmp/driller/7
   pushd /tmp/driller/7 &> /dev/null
   ln -s ../2/ symlink
-  popd
+  popd &> /dev/null
 
   home_tmp="${HOME}/.driller_tmp"
   mkdir ${home_tmp}
@@ -99,21 +95,6 @@ function oneTimeSetUp() {
   ln -s ${home_tmp}/file ${home_tmp}/symlink
   ln -s ${home_tmp}/file ${HOME}/.driller_tmpfile
 }
-
-function oneTimeTearDown() {
-  rm -Rf /tmp/driller
-  rm -Rf ${home_tmp}
-  rm -f ${HOME}/.driller_tmpfile
-}
-
-function tearDown() {
-  rm -Rf ${stdout_file} ${stderr_file}
-}
-
-function setUp() {
-  cd ${running_dir}
-}
-
 
 # load and run shUnit2
 source ./shunit/src/shunit2

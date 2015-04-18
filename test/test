@@ -1,4 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
+. functions.inc
+
 function testHelp() {
   ${driller} --help                                         > ${stdout}
   status=$?
