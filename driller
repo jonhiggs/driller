@@ -6,12 +6,12 @@ USAGE:
   $(basename -- $0) [OPTION] <dir>
 
 OPTIONS:
-  --absolute                Provide the absolute path (default).
-  --basename                Provide the filename from a path.
-  --dereference             Dereference a link all the way down to it's source.
-  --dirname                 Provide the dirname from a path.
-  --help                    This help.
-  --scm-root                Find the scm root (git or hg).
+  -a, --absolute            Provide the absolute path (default).
+  -b, --basename            Provide the filename from a path.
+  -D, --dereference         Dereference a link all the way down to it's source.
+  -d, --dirname             Provide the dirname from a path.
+  -h, --help                This help.
+  -s, --scm-root            Find the scm root (git or hg).
 
 EOF
   exit 0
@@ -111,6 +111,8 @@ for a in "$@"; do
     PATH_ARGS+=( "$(__clean_path $a)" )
   elif [[ "$a" =~ ^--[a-z\-]+$ ]]; then
     OPTION=$a
+  elif [[ "$a" =~ ^-[a-z]$ ]]; then
+    OPTION=$a
   fi
 done
 
@@ -119,11 +121,11 @@ for element in $(seq 0 $((${#PATH_ARGS[@]} - 1))); do
   [[ -z ${path} ]] && break
 
   case "${OPTION}" in
-    "--absolute")             echo $path                    ;;
-    "--basename")             [[ ! -d $path ]] && __filename $path  ;;
-    "--dereference")          __dereference $path                   ;;
-    "--dirname")              __dirname $path                       ;;
-    "--scm"|"--scm-root")     __scm_root $path                      ;;
+    "--absolute"|"-a")             echo $path                            ;;
+    "--basename"|"-b")             [[ ! -d $path ]] && __filename $path  ;;
+    "--dereference"|"-D")          __dereference $path                   ;;
+    "--dirname"|"-d")              __dirname $path                       ;;
+    "--scm"|"--scm-root"|"-s")     __scm_root $path                      ;;
   esac
 done
 
