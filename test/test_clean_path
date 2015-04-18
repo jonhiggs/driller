@@ -5,6 +5,20 @@ function __run() {
   stderr=$(cat ${stderr_file})
 }
 
+function testWeirdPaths() {
+  __run --absolute /tmp/driller/1/../
+  assertEquals "/tmp/driller/1/../"     "/tmp/driller/"   "$stdout"
+
+  __run --absolute //..//
+  assertEquals "//..//"         "/"                         "$stdout"
+
+  __run --absolute //////
+  assertEquals "//////"         "/"                         "$stdout"
+
+  __run --absolute /./..///
+  assertEquals "/./..///"       "/"                         "$stdout"
+}
+
 function testRelativeToSource() {
   # make sure paths are taken relative to the source, not the pwd.
   cd /tmp/driller/

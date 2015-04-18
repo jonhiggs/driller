@@ -27,34 +27,6 @@ function testAbsoluteSimpleDir() {
   assertEquals "stdout"         "/tmp/driller/1/"           "$(cat ${stdout})"
 }
 
-function testAbsoluteComplicatedDir() {
-  ${driller} --absolute /tmp/driller/1/1/../                > ${stdout}
-  status=$?
-  assertEquals "exit status"    "0"                         "${status}"
-  assertEquals "stdout"         "/tmp/driller/1/"           "$(cat ${stdout})"
-}
-
-function testAbsoluteWeirdRoot1() {
-  ${driller} --absolute //..//                              > ${stdout}
-  status=$?
-  assertEquals "exit status"    "0"                         "${status}"
-  assertEquals "stdout"         "/"                         "$(cat ${stdout})"
-}
-
-function testAbsoluteWeirdRoot2() {
-  ${driller} --absolute //////                              > ${stdout}
-  status=$?
-  assertEquals "exit status"    "0"                         "${status}"
-  assertEquals "stdout"         "/"                         "$(cat ${stdout})"
-}
-
-function testAbsoluteWeirdRoot3() {
-  ${driller} --absolute /./..///                            > ${stdout}
-  status=$?
-  assertEquals "exit status"    "0"                         "${status}"
-  assertEquals "stdout"         "/"                         "$(cat ${stdout})"
-}
-
 function testAbsoluteSimpleFile() {
   ${driller} --absolute /tmp/driller/1/1/file               > ${stdout}
   status=$?
