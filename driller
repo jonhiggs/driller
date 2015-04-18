@@ -46,7 +46,7 @@ function __qualify_dot_dot_slashes() {
   read <<< $@
   stdin=$(cat /dev/stdin)
 
-  if [[ -d ${stdin} ]]; then
+  if [[ -d ${stdin} ]] && [[ ! -L ${stdin} ]]; then
     dir=${stdin}
   else
     dir=$(dirname -- "${stdin}")

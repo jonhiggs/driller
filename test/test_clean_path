@@ -14,16 +14,25 @@ function testRelativeToSource() {
   assertEquals "exit status"    "0"                         "$status"
 }
 
+function testSymlinkToDirectory() {
+  # a symlink to a directory is not a directory.
+  __run /tmp/driller/2/symlink_to_dir
+  assertEquals "stdout"         "/tmp/driller/1/"           "$stdout"
+  assertEquals "stderr"         ""                          "$stderr"
+  assertEquals "exit status"    "0"                         "$status"
+}
+
 function oneTimeSetUp() {
   running_dir=$(pwd)
   driller="${running_dir}/../driller"
   stdout_file="/tmp/driller/stdout"
   stderr_file="/tmp/driller/stderr"
 
-  mkdir -p /tmp/driller/1/ /tmp/driller/2
+  mkdir -p /tmp/driller/1 /tmp/driller/2
   touch /tmp/driller/1/file
   pushd /tmp/driller/2 &> /dev/null
   ln -s ../1/file symlink
+  ln -s ../1/ symlink_to_dir
   popd &> /dev/null
 }
 
