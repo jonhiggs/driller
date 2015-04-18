@@ -1,5 +1,5 @@
 function __run() {
-  ${driller} --dereference $@ > ${stdout_file} 2> ${stderr_file}
+  ${driller} $@ > ${stdout_file} 2> ${stderr_file}
   status=$?
   stdout=$(cat ${stdout_file})
   stderr=$(cat ${stderr_file})
@@ -8,7 +8,7 @@ function __run() {
 function testRelativeToSource() {
   # make sure paths are taken relative to the source, not the pwd.
   cd /tmp/driller/
-  __run ./2/symlink
+  __run --dereference ./2/symlink
   assertEquals "stdout"         "/tmp/driller/1/file"       "$stdout"
   assertEquals "stderr"         ""                          "$stderr"
   assertEquals "exit status"    "0"                         "$status"
@@ -16,8 +16,13 @@ function testRelativeToSource() {
 
 function testSymlinkToDirectory() {
   # a symlink to a directory is not a directory.
-  __run /tmp/driller/2/symlink_to_dir
+  __run --dereference /tmp/driller/2/symlink_to_dir
   assertEquals "stdout"         "/tmp/driller/1/"           "$stdout"
+  assertEquals "stderr"         ""                          "$stderr"
+  assertEquals "exit status"    "0"                         "$status"
+
+  __run --absolute /tmp/driller/2/symlink_to_dir
+  assertEquals "stdout"         "/tmp/driller/2/symlink_to_dir" "$stdout"
   assertEquals "stderr"         ""                          "$stderr"
   assertEquals "exit status"    "0"                         "$status"
 }

@@ -113,13 +113,6 @@ function testAbsoluteSymlinkFile() {
   assertEquals "stdout"         "/tmp/driller/4/symlink"    "$(cat ${stdout})"
 }
 
-function testAbsoluteSymlinkDir() {
-  ${driller} --absolute /tmp/driller/4/symlink_dir          > ${stdout}
-  status=$?
-  assertEquals "exit status"    "0"                         "${status}"
-  assertEquals "stdout"         "/tmp/driller/4/symlink_dir/"   "$(cat ${stdout})"
-}
-
 function testAbsoluteWildcardFileSingle() {
   ${driller} --absolute /tmp/driller/4/fi*                  > ${stdout}
   status=$?
@@ -247,65 +240,41 @@ link
 symlink"                        "$(cat ${stdout})"
 }
 
-function testDereferenceSymlinkSingle() {
-  ${driller} --dereference /tmp/driller/6/symlink           > ${stdout}
-  status=$?
-  assertEquals "exit status"    "0"                         "${status}"
-  assertEquals "stdout"         "/dev/null"                 "$(cat ${stdout})"
-}
-
-function testDereferenceSymlinkMultiple() {
-  ${driller} --dereference /tmp/driller/6/symlink2symlink   > ${stdout}
-  status=$?
-  assertEquals "exit status"    "0"                         "${status}"
-  assertEquals "stdout"         "/dev/null"                 "$(cat ${stdout})"
-}
-
-function testDereferenceNonLinkDir() {
-  ${driller} --dereference /tmp/driller/6/ > ${stdout}
-  status=$?
-  assertEquals "exit status"    "0"                         "${status}"
-  assertEquals "stdout"         "/tmp/driller/6/"           "$(cat ${stdout})"
-}
-
-function testDereferenceNonLinkFile() {
-  ${driller} --dereference /tmp/driller/6/file > ${stdout}
-  status=$?
-  assertEquals "exit status"    "0"                         "${status}"
-  assertEquals "stdout"         "/tmp/driller/6/file"       "$(cat ${stdout})"
-}
-
-function testDereferenceRelative() {
-  cd /tmp/driller/6/
-  ln -s file relative_symlink
-  ${running_dir}/../driller --dereference ./relative_symlink > ${stdout} 2> ${stderr}
-  status=$?
-  assertEquals "exit status"    "0"                         "${status}"
-  assertEquals "stdout"         "/tmp/driller/6/file"       "$(cat ${stdout})"
-}
-
-#function testDereferenceRelativeSymlink() {
-#  cd /tmp/driller/4
-#  ${driller} --dereference ./symlink_dir          > ${stdout}
-#  status=$?
-#  assertEquals "exit status"    "0"               "${status}"
-#  assertEquals "stdout"         "/dev/"           "$(cat ${stdout})"
-#}
-
-function testDereferenceSymlinkLoop() {
-  ${driller} --dereference /tmp/driller/6/linkloop1         > ${stdout} 2> ${stderr}
-  status=$?
-  assertEquals "exit status"    "1"                         "${status}"
-  assertEquals "stderr"         "Fatal: Symlink loop."      "$(cat ${stderr})"
-}
-
 function testHomeAbsoluteDir() {
   ${driller} ${HOME}/.driller_tmp          > ${stdout}
   status=$?
   assertEquals "exit status"    "0"               "${status}"
   assertEquals "stdout"         "${HOME}/.driller_tmp/" "$(cat ${stdout})"
+
+  ${driller} ~/.driller_tmp          > ${stdout}
+  status=$?
+  assertEquals "exit status"    "0"               "${status}"
+  assertEquals "stdout"         "${HOME}/.driller_tmp/" "$(cat ${stdout})"
 }
 
+function testHomeAbsoluteFile() {
+  ${driller} ${HOME}/.driller_tmp/file          > ${stdout}
+  status=$?
+  assertEquals "exit status"    "0"               "${status}"
+  assertEquals "stdout"         "${HOME}/.driller_tmp/file" "$(cat ${stdout})"
+
+  ${driller} ~/.driller_tmp/file          > ${stdout}
+  status=$?
+  assertEquals "exit status"    "0"               "${status}"
+  assertEquals "stdout"         "${HOME}/.driller_tmp/file" "$(cat ${stdout})"
+}
+
+function testHomeDereference() {
+  ${driller} --dereference ${HOME}/.driller_tmp/symlink          > ${stdout}
+  status=$?
+  assertEquals "exit status"    "0"               "${status}"
+  assertEquals "stdout"         "${HOME}/.driller_tmp/file" "$(cat ${stdout})"
+
+  ${driller} --dereference ~/.driller_tmp/symlink          > ${stdout}
+  status=$?
+  assertEquals "exit status"    "0"               "${status}"
+  assertEquals "stdout"         "${HOME}/.driller_tmp/file" "$(cat ${stdout})"
+}
 
 function oneTimeSetUp() {
   running_dir=$(pwd)
@@ -339,11 +308,15 @@ function oneTimeSetUp() {
 
   home_tmp="${HOME}/.driller_tmp"
   mkdir ${home_tmp}
+  touch ${home_tmp}/file
+  ln -s ${home_tmp}/file ${home_tmp}/symlink
+  ln -s ${home_tmp}/file ${HOME}/.driller_tmpfile
 }
 
 function oneTimeTearDown() {
   rm -Rf /tmp/driller
   rm -Rf ${home_tmp}
+  rm -f ${HOME}/.driller_tmpfile
 }
 
 function tearDown() {
