@@ -20,71 +20,6 @@ function testNoOption() {
   assertEquals "stdout"         "/tmp/driller/1/"           "$(cat ${stdout})"
 }
 
-function testAbsoluteSimpleDir() {
-  ${driller} --absolute /tmp/driller/1                      > ${stdout}
-  status=$?
-  assertEquals "exit status"    "0"                         "${status}"
-  assertEquals "stdout"         "/tmp/driller/1/"           "$(cat ${stdout})"
-}
-
-function testAbsoluteSimpleFile() {
-  ${driller} --absolute /tmp/driller/1/1/file               > ${stdout}
-  status=$?
-  assertEquals "exit status"    "0"                         "${status}"
-  assertEquals "stdout"         "/tmp/driller/1/1/file"     "$(cat ${stdout})"
-}
-
-function testAbsoluteSimpleFileWithSpaces() {
-  ${driller} --absolute /tmp/driller/1/a\ file\ with\ spaces       > ${stdout}
-  status=$?
-  assertEquals "exit status"    "0"                                     "${status}"
-  assertEquals "stdout"         "/tmp/driller/1/a file with spaces"     "$(cat ${stdout})"
-}
-
-
-function testAbsoluteFileLooksLikeSwitch() {
-  d=$(pwd)
-  pushd /tmp/driller/5/ &> /dev/null
-  ${d}/../driller --absolute -file                          > ${stdout} 2> ${stderr}
-  popd &> /dev/null
-  status=$?
-  assertEquals "exit status"    "0"                         "${status}"
-  assertEquals "stdout"         "/tmp/driller/5/-file"      "$(cat ${stdout})"
-  assertEquals "stderr"         ""                          "$(cat ${stderr})"
-}
-
-function testAbsoluteFileLooksLikeHelp() {
-  d=$(pwd)
-  pushd /tmp/driller/5/ &> /dev/null
-  ${d}/../driller --absolute -- --help                         > ${stdout} 2> ${stderr}
-  popd &> /dev/null
-  status=$?
-  assertEquals "exit status"    "0"                         "${status}"
-  assertEquals "stdout"         "/tmp/driller/5/--help"     "$(cat ${stdout})"
-  assertEquals "stderr"         ""                          "$(cat ${stderr})"
-}
-
-function testAbsoluteDeviceFile() {
-  ${driller} --absolute /dev/null                           > ${stdout}
-  status=$?
-  assertEquals "exit status"    "0"                         "${status}"
-  assertEquals "stdout"         "/dev/null"                 "$(cat ${stdout})"
-}
-
-function testAbsoluteLinkFile() {
-  ${driller} --absolute /tmp/driller/4/link                 > ${stdout}
-  status=$?
-  assertEquals "exit status"    "0"                         "${status}"
-  assertEquals "stdout"         "/tmp/driller/4/link"       "$(cat ${stdout})"
-}
-
-function testAbsoluteSymlinkFile() {
-  ${driller} --absolute /tmp/driller/4/symlink              > ${stdout}
-  status=$?
-  assertEquals "exit status"    "0"                         "${status}"
-  assertEquals "stdout"         "/tmp/driller/4/symlink"    "$(cat ${stdout})"
-}
-
 function testAbsoluteWildcardFileSingle() {
   ${driller} --absolute /tmp/driller/4/fi*                  > ${stdout}
   status=$?
@@ -100,27 +35,6 @@ function testAbsoluteWildcardFileMulti() {
 /tmp/driller/4/link
 /tmp/driller/4/symlink
 /tmp/driller/4/symlink_dir"                                 "$(cat ${stdout})"
-}
-
-function testAbsoluteComplicatedFile1() {
-  ${driller} --absolute /tmp/driller/1/../1/1/file          > ${stdout}
-  status=$?
-  assertEquals "exit status"    "0"                         "${status}"
-  assertEquals "stdout"         "/tmp/driller/1/1/file"     "$(cat ${stdout})"
-}
-
-function testAbsoluteComplicatedFile2() {
-  ${driller} --absolute /tmp/driller/1/../1/a\ file\ with\ spaces       > ${stdout}
-  status=$?
-  assertEquals "exit status"    "0"                                     "${status}"
-  assertEquals "stdout"         "/tmp/driller/1/a file with spaces"     "$(cat ${stdout})"
-}
-
-function testAbsoluteComplicatedFile3() {
-  ${driller} --absolute "/tmp/driller/1/../1/a file with spaces"        > ${stdout}
-  status=$?
-  assertEquals "exit status"    "0"                                     "${status}"
-  assertEquals "stdout"         "/tmp/driller/1/a file with spaces"     "$(cat ${stdout})"
 }
 
 function testScmRootGitSimpleDir() {
@@ -210,42 +124,6 @@ function testBasenameWildcardFileMulti() {
   assertEquals "stdout"         "file
 link
 symlink"                        "$(cat ${stdout})"
-}
-
-function testHomeAbsoluteDir() {
-  ${driller} ${HOME}/.driller_tmp          > ${stdout}
-  status=$?
-  assertEquals "exit status"    "0"               "${status}"
-  assertEquals "stdout"         "${HOME}/.driller_tmp/" "$(cat ${stdout})"
-
-  ${driller} ~/.driller_tmp          > ${stdout}
-  status=$?
-  assertEquals "exit status"    "0"               "${status}"
-  assertEquals "stdout"         "${HOME}/.driller_tmp/" "$(cat ${stdout})"
-}
-
-function testHomeAbsoluteFile() {
-  ${driller} ${HOME}/.driller_tmp/file          > ${stdout}
-  status=$?
-  assertEquals "exit status"    "0"               "${status}"
-  assertEquals "stdout"         "${HOME}/.driller_tmp/file" "$(cat ${stdout})"
-
-  ${driller} ~/.driller_tmp/file          > ${stdout}
-  status=$?
-  assertEquals "exit status"    "0"               "${status}"
-  assertEquals "stdout"         "${HOME}/.driller_tmp/file" "$(cat ${stdout})"
-}
-
-function testHomeDereference() {
-  ${driller} --dereference ${HOME}/.driller_tmp/symlink          > ${stdout}
-  status=$?
-  assertEquals "exit status"    "0"               "${status}"
-  assertEquals "stdout"         "${HOME}/.driller_tmp/file" "$(cat ${stdout})"
-
-  ${driller} --dereference ~/.driller_tmp/symlink          > ${stdout}
-  status=$?
-  assertEquals "exit status"    "0"               "${status}"
-  assertEquals "stdout"         "${HOME}/.driller_tmp/file" "$(cat ${stdout})"
 }
 
 function oneTimeSetUp() {

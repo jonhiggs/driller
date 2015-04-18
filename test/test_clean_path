@@ -5,9 +5,43 @@ function __run() {
   stderr=$(cat ${stderr_file})
 }
 
+function testSimplePaths() {
+  __run --absolute /tmp/driller/1
+  assertEquals "directory"         "/tmp/driller/1/"           "$stdout"
+
+  __run --absolute /tmp/driller/1/file
+  assertEquals "file"         "/tmp/driller/1/file"           "$stdout"
+
+  __run --absolute /dev/null
+  assertEquals "device"       "/dev/null"                 "$stdout"
+
+  __run --absolute /tmp/driller/2/hardlink
+  assertEquals "hardlink"         "/tmp/driller/2/hardlink"       "$stdout"
+
+  __run --absolute /tmp/driller/2/symlink
+  assertEquals "symlink"         "/tmp/driller/2/symlink"       "$stdout"
+
+  ${driller} --absolute /tmp/driller/1/a\ file\ with\ spaces > ${stdout_file}
+  assertEquals "file with spaces" "/tmp/driller/1/a file with spaces"     "$(cat $stdout_file)"
+
+  pushd /tmp/driller/1/ &> /dev/null
+  __run --absolute -file
+  assertEquals "file that looks like switch"  "/tmp/driller/1/-file"           "$stdout"
+
+  __run --absolute -- --help
+  assertEquals "file that looks like help"  "/tmp/driller/1/--help"     "$stdout"
+
+  __run --absolute ~/.driller_tmpfile
+  assertEquals "expand ~"         "${HOME}/.driller_tmpfile" "$stdout"
+}
+
+
 function testWeirdPaths() {
   __run --absolute /tmp/driller/1/../
   assertEquals "/tmp/driller/1/../"     "/tmp/driller/"   "$stdout"
+
+  __run --absolute /tmp/driller/../driller/1/../
+  assertEquals "/tmp/driller/../driller/1/../"     "/tmp/driller/"   "$stdout"
 
   __run --absolute //..//
   assertEquals "//..//"         "/"                         "$stdout"
@@ -18,6 +52,7 @@ function testWeirdPaths() {
   __run --absolute /./..///
   assertEquals "/./..///"       "/"                         "$stdout"
 }
+
 
 function testRelativeToSource() {
   # make sure paths are taken relative to the source, not the pwd.
@@ -49,10 +84,16 @@ function oneTimeSetUp() {
 
   mkdir -p /tmp/driller/1 /tmp/driller/2
   touch /tmp/driller/1/file
+  touch "/tmp/driller/1/a file with spaces"
+  touch "/tmp/driller/1/-file"
+  touch "/tmp/driller/1/--help"
   pushd /tmp/driller/2 &> /dev/null
   ln -s ../1/file symlink
+  ln ../1/file hardlink
   ln -s ../1/ symlink_to_dir
   popd &> /dev/null
+
+  touch ${HOME}/.driller_tmpfile
 }
 
 function oneTimeTearDown() {
