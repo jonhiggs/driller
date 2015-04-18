@@ -9,6 +9,7 @@ function oneTimeTearDown() {
   rm -Rf /tmp/driller
   rm -Rf ${home_tmp}
   rm -f ${HOME}/.driller_tmpfile
+  rm -Rf ${HOME}/.driller_tmpdir
 }
 
 function tearDown() {

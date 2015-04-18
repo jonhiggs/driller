@@ -100,6 +100,33 @@ function fatal() {
   exit 1
 }
 
+function __user_home() {
+  user=$1
+  if [[ $(uname) == "Darwin" ]]; then
+    dscacheutil -q user -a name ${user} | grep ^dir: | cut -d\  -f2-
+  else
+    cat /etc/passwd | grep ^${user} | cut -d: -f6
+  fi
+}
+
+function __expand_tilde() {
+  path=$1
+
+  user_section=$(echo ${path} | grep -o '^~[^\/]*')
+  path_section=$(echo ${path} | grep -o '\/.*$')
+
+  if [[ -z ${user_section} ]]; then
+    echo ${path}
+    return 0
+  elif [[ ${user_section} == "~" ]]; then
+    user=${USER}
+  else
+    user=$(echo ${user_section} | sed 's/~//g')
+  fi
+
+  echo "$(__user_home ${user})${path_section}"
+}
+
 [[ -z $@ ]] && usage
 PATH_ARGS=""
 OPTION="--absolute"
@@ -109,6 +136,7 @@ arguments="$@"
 [[ -p /dev/stdin ]] && arguments="$arguments $(cat /dev/stdin)"
 
 for a in ${arguments}; do
+  a=$(__expand_tilde $a)
   if [[ -e "$a" ]] || [[ -L "$a" ]]; then
     PATH_ARGS+=( "$(__clean_path $a)" )
   elif [[ "$a" =~ ^--[a-z\-]+$ ]]; then
