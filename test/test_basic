@@ -35,6 +35,13 @@ function testBasename() {
 function testStdin() {
   echo "/dev/null" | ${driller} --dirname > ${stdout_file}
   assertEquals "dirname"         "/dev/"                      "$(cat $stdout_file)"
+
+  echo "/dev/null" | ${driller} --basename > ${stdout_file}
+  assertEquals "basename"         "null"                       "$(cat $stdout_file)"
+
+  echo "~" | ${driller} --absolute > ${stdout_file}
+  assertEquals "absolute"         "${HOME}/"                       "$(cat $stdout_file)"
+
 }
 
 function oneTimeSetUp() {
