@@ -4,8 +4,8 @@ dir=$(dirname $0)
 tmpfile=$(mktemp -t driller)
 
 for test in ${dir}/test_*; do
-  ./${test} &> ${tmpfile}
   echo ${test}
+  ./${test} &> ${tmpfile}
   if [[ $? -eq 0 ]]; then
     echo "ok"
   else
