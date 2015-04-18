@@ -1,0 +1,109 @@
+#!/usr/bin/env bash
+. functions.inc
+
+function testHelp() {
+  ${driller} --help                                         > ${stdout}
+  status=$?
+  assertEquals "exit status"    "0"                         "${status}"
+  assertEquals "stdout"         "USAGE:"                    "$(head -n1 ${stdout})"
+}
+
+function testNoArg() {
+  ${driller}                                                > ${stdout}
+  status=$?
+  assertEquals "exit status"    "0"                         "${status}"
+  assertEquals "stdout"         "USAGE:"                    "$(head -n1 ${stdout})"
+}
+
+function testNoOption() {
+  ${driller} /tmp/driller/1/                                > ${stdout}
+  status=$?
+  assertEquals "exit status"    "0"                         "${status}"
+  assertEquals "stdout"         "/tmp/driller/1/"           "$(cat ${stdout})"
+}
+
+function testDirnameSimple() {
+  ${driller} --dirname /tmp/driller/1/1/file                > ${stdout}
+  status=$?
+  assertEquals "exit status"    "0"                         "${status}"
+  assertEquals "stdout"         "/tmp/driller/1/1/"         "$(cat ${stdout})"
+}
+
+function testDirnameRelative() {
+  ${driller} --dirname ./                                   > ${stdout}
+  status=$?
+  assertEquals "exit status"    "0"                         "${status}"
+  assertEquals "stdout"         "${running_dir}/"           "$(cat ${stdout})"
+}
+
+function testBasenameSimple() {
+  ${driller} --basename /tmp/driller/1/1/file               > ${stdout}
+  status=$?
+  assertEquals "exit status"    "0"                         "${status}"
+  assertEquals "stdout"         "file"                      "$(cat ${stdout})"
+}
+
+function testBasenameRelative() {
+  ${driller} --basename ./test                              > ${stdout}
+  status=$?
+  assertEquals "exit status"    "0"                         "${status}"
+  assertEquals "stdout"         "test"                      "$(cat ${stdout})"
+}
+
+
+function oneTimeSetUp() {
+  running_dir=$(pwd)
+  driller="${running_dir}/../driller"
+  stdout="/tmp/driller/stdout"
+  stderr="/tmp/driller/stderr"
+  mkdir -p /tmp/driller/1/1
+  touch    /tmp/driller/1/1/file
+  touch    "/tmp/driller/1/a file with spaces"
+  mkdir -p /tmp/driller/2/1
+  mkdir -p /tmp/driller/2/.git
+  touch    /tmp/driller/2/file
+  mkdir -p /tmp/driller/3/.hg
+  mkdir -p /tmp/driller/3/1
+  touch    /tmp/driller/3/file
+  mkdir -p /tmp/driller/4/
+  touch    /tmp/driller/4/file
+  ln       /tmp/driller/4/file /tmp/driller/4/link
+  mkdir -p /tmp/driller/5/
+  touch    /tmp/driller/5/-file
+  touch    /tmp/driller/5/--help
+  ln -s    /dev/null /tmp/driller/4/symlink
+  ln -s    /dev/ /tmp/driller/4/symlink_dir
+  mkdir -p /tmp/driller/6
+  touch    /tmp/driller/6/file
+  ln -s    /dev/null /tmp/driller/6/symlink
+  ln -s    /tmp/driller/2/file /tmp/driller/6/symlink_to_gitfile
+  ln -s    /tmp/driller/6/symlink /tmp/driller/6/symlink2symlink
+  ln -s    /tmp/driller/6/linkloop2 /tmp/driller/6/linkloop1
+  ln -s    /tmp/driller/6/linkloop1 /tmp/driller/6/linkloop2
+
+  home_tmp="${HOME}/.driller_tmp"
+  mkdir ${home_tmp}
+  touch ${home_tmp}/file
+  ln -s ${home_tmp}/file ${home_tmp}/symlink
+  ln -s ${home_tmp}/file ${HOME}/.driller_tmpfile
+}
+
+function oneTimeTearDown() {
+  rm -Rf /tmp/driller
+  rm -Rf ${home_tmp}
+  rm -f ${HOME}/.driller_tmpfile
+}
+
+function tearDown() {
+  rm -Rf ${stdout} ${stderr}
+}
+
+function setUp() {
+  cd ${running_dir}
+}
+
+
+# load and run shUnit2
+source ./shunit/src/shunit2
+
+# vim: ai ts=2 sw=2 et sts=2 ft=sh
