@@ -5,7 +5,13 @@ tmpfile=$(mktemp -t driller)
 
 for test in ${dir}/test_*; do
   ./${test} &> ${tmpfile}
-  [[ $? -eq 0 ]] || (echo ${test} && cat ${tmpfile})
+  echo ${test}
+  if [[ $? -eq 0 ]]; then
+    echo "ok"
+  else
+    cat ${tmpfile}
+  fi
+  echo "---------------------------------"
 done
 
 rm $tmpfile
