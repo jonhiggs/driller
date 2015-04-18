@@ -1,25 +1,19 @@
 #!/bin/bash
 . functions.inc
 
-function testSymlinkToFile() {
-  # A SYMLINK TO A FILE.
-
+function testTargets() {
   # with an absolute path.
   __run --dereference /tmp/driller/6/symlink
-  assertEquals "absolute stdout"         "/dev/null"                 "$stdout"
-  assertEquals "absolute exit status"    "0"                         "$status"
+  assertEquals "absolute target"         "/dev/null"                 "$stdout"
 
-  # when the symlink contains a relative path to dir
   __run --dereference /tmp/driller/7/symlink
-  assertEquals "relative stdout"         "/tmp/driller/2/"           "$stdout"
-  assertEquals "relative exit status"    "0"                         "$status"
+  assertEquals "relative target"         "/tmp/driller/2/"           "$stdout"
 
   # with a relative path.
   #cd ${HOME}
   #__run --dereference ../../tmp/driller/6/symlink
   #assertEquals "relative stdout"         "/dev/null"                 "$stdout"
   #assertEquals "relative exit status"    "0"                         "$status"
-
 }
 
 #function testSymlinkToSymlink() {
@@ -53,36 +47,59 @@ function testSymlinkToFile() {
 #  assertEquals "exit status"    "1"                         "$status"
 #}
 
+#function testRelativeToSource() {
+#  # make sure paths are taken relative to the source, not the pwd.
+#  cd /tmp/driller/
+#  __run --dereference ./2/symlink
+#  assertEquals "stdout"         "/tmp/driller/1/file"       "$stdout"
+#  assertEquals "stderr"         ""                          "$stderr"
+#  assertEquals "exit status"    "0"                         "$status"
+#}
+#
+#function testSymlinkToDirectory() {
+#  # a symlink to a directory is not a directory.
+#  __run --dereference /tmp/driller/2/symlink_to_dir
+#  assertEquals "stdout"         "/tmp/driller/1/"           "$stdout"
+#  assertEquals "stderr"         ""                          "$stderr"
+#  assertEquals "exit status"    "0"                         "$status"
+#
+#  __run --absolute /tmp/driller/2/symlink_to_dir
+#  assertEquals "stdout"         "/tmp/driller/2/symlink_to_dir" "$stdout"
+#  assertEquals "stderr"         ""                          "$stderr"
+#  assertEquals "exit status"    "0"                         "$status"
+#}
+
+
 function oneTimeSetUp() {
   running_dir=$(pwd)
   driller="${running_dir}/../driller"
   stdout_file="/tmp/driller/stdout"
   stderr_file="/tmp/driller/stderr"
 
-  mkdir -p /tmp/driller/1/1
-  touch    /tmp/driller/1/1/file
-  touch    "/tmp/driller/1/a file with spaces"
-  mkdir -p /tmp/driller/2/1
-  mkdir -p /tmp/driller/2/.git
-  touch    /tmp/driller/2/file
-  mkdir -p /tmp/driller/3/.hg
-  mkdir -p /tmp/driller/3/1
-  touch    /tmp/driller/3/file
-  mkdir -p /tmp/driller/4/
-  touch    /tmp/driller/4/file
-  ln       /tmp/driller/4/file /tmp/driller/4/link
-  mkdir -p /tmp/driller/5/
-  touch    /tmp/driller/5/-file
-  touch    /tmp/driller/5/--help
-  ln -s    /dev/null /tmp/driller/4/symlink
-  ln -s    /dev/ /tmp/driller/4/symlink_dir
-  mkdir -p /tmp/driller/6
-  touch    /tmp/driller/6/file
+  #mkdir -p /tmp/driller/1/1
+  #touch    /tmp/driller/1/1/file
+  #touch    "/tmp/driller/1/a file with spaces"
+  #mkdir -p /tmp/driller/2/1
+  #mkdir -p /tmp/driller/2/.git
+  #touch    /tmp/driller/2/file
+  #mkdir -p /tmp/driller/3/.hg
+  #mkdir -p /tmp/driller/3/1
+  #touch    /tmp/driller/3/file
+  #mkdir -p /tmp/driller/4/
+  #touch    /tmp/driller/4/file
+  #ln       /tmp/driller/4/file /tmp/driller/4/link
+  #mkdir -p /tmp/driller/5/
+  #touch    /tmp/driller/5/-file
+  #touch    /tmp/driller/5/--help
+  #ln -s    /dev/null /tmp/driller/4/symlink
+  #ln -s    /dev/ /tmp/driller/4/symlink_dir
+  #mkdir -p /tmp/driller/6
+  #touch    /tmp/driller/6/file
   ln -s    /dev/null /tmp/driller/6/symlink
-  ln -s    /tmp/driller/2/file /tmp/driller/6/symlink_to_gitfile
+  #ln -s    /tmp/driller/2/file /tmp/driller/6/symlink_to_gitfile
   ln -s    /tmp/driller/6/symlink /tmp/driller/6/symlink2symlink
-  ln -s    /tmp/driller/6/linkloop2 /tmp/driller/6/linkloop1
-  ln -s    /tmp/driller/6/linkloop1 /tmp/driller/6/linkloop2
+  #ln -s    /tmp/driller/6/linkloop2 /tmp/driller/6/linkloop1
+  #ln -s    /tmp/driller/6/linkloop1 /tmp/driller/6/linkloop2
 
   mkdir -p /tmp/driller/7
   pushd /tmp/driller/7 &> /dev/null
