@@ -127,7 +127,7 @@ function testAbsoluteWildcardFileMulti() {
   assertEquals "stdout"         "/tmp/driller/4/file
 /tmp/driller/4/link
 /tmp/driller/4/symlink
-/tmp/driller/4/symlink_dir/"                                "$(cat ${stdout})"
+/tmp/driller/4/symlink_dir"                                 "$(cat ${stdout})"
 }
 
 function testAbsoluteComplicatedFile1() {
