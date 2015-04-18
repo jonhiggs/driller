@@ -22,51 +22,6 @@ function testNoOption() {
   assertEquals "stdout"         "/tmp/driller/1/"           "$(cat ${stdout})"
 }
 
-function testScmRootGitSimpleDir() {
-  ${driller} --scm /tmp/driller/2/1                         > ${stdout}
-  status=$?
-  assertEquals "exit status"    "0"                         "${status}"
-  assertEquals "stdout"         "/tmp/driller/2/"           "$(cat ${stdout})"
-}
-
-function testScmRootGitSimpleFile() {
-  ${driller} --scm /tmp/driller/2/file                      > ${stdout}
-  status=$?
-  assertEquals "exit status"    "0"                         "${status}"
-  assertEquals "stdout"         "/tmp/driller/2/"           "$(cat ${stdout})"
-}
-
-function testScmRootHgSimpleDir() {
-  ${driller} --scm /tmp/driller/3/1                         > ${stdout}
-  status=$?
-  assertEquals "exit status"    "0"                         "${status}"
-  assertEquals "stdout"         "/tmp/driller/3/"           "$(cat ${stdout})"
-}
-
-function testScmRootHgSimpleFile() {
-  ${driller} --scm /tmp/driller/3/file                      > ${stdout} 2> ${stderr}
-  status=$?
-  assertEquals "exit status"    "0"                         "${status}"
-  assertEquals "stdout"         "/tmp/driller/3/"           "$(cat ${stdout})"
-  assertEquals "stderr"         ""                          "$(cat ${stderr})"
-}
-
-function testScmRootExternalLink() {
-  ${driller} --scm /tmp/driller/6/symlink_to_gitfile        > ${stdout} 2> ${stderr}
-  status=$?
-  assertEquals "exit status"    "0"                         "${status}"
-  assertEquals "stdout"         "/tmp/driller/2/"           "$(cat ${stdout})"
-  assertEquals "stderr"         ""                          "$(cat ${stderr})"
-}
-
-function testScmRootHitRoot() {
-  ${driller} --scm ${HOME}                                  > ${stdout} 2> ${stderr}
-  status=$?
-  assertEquals "exit status"    "1"                         "${status}"
-  assertEquals "stderr"         "Fatal: SCM dir not found"  "$(cat ${stderr})"
-  assertEquals "stdout"         ""                          "$(cat ${stdout})"
-}
-
 function testDirnameSimple() {
   ${driller} --dirname /tmp/driller/1/1/file                > ${stdout}
   status=$?
