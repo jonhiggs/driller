@@ -22,23 +22,6 @@ function testNoOption() {
   assertEquals "stdout"         "/tmp/driller/1/"           "$(cat ${stdout})"
 }
 
-function testAbsoluteWildcardFileSingle() {
-  ${driller} --absolute /tmp/driller/4/fi*                  > ${stdout}
-  status=$?
-  assertEquals "exit status"    "0"                         "${status}"
-  assertEquals "stdout"         "/tmp/driller/4/file"       "$(cat ${stdout})"
-}
-
-function testAbsoluteWildcardFileMulti() {
-  ${driller} --absolute /tmp/driller/4/*                    > ${stdout} 2> ${stderr}
-  status=$?
-  assertEquals "exit status"    "0"                         "${status}"
-  assertEquals "stdout"         "/tmp/driller/4/file
-/tmp/driller/4/link
-/tmp/driller/4/symlink
-/tmp/driller/4/symlink_dir"                                 "$(cat ${stdout})"
-}
-
 function testScmRootGitSimpleDir() {
   ${driller} --scm /tmp/driller/2/1                         > ${stdout}
   status=$?
@@ -112,21 +95,6 @@ function testBasenameRelative() {
   assertEquals "stdout"         "test"                      "$(cat ${stdout})"
 }
 
-function testBasenameWildcardFileSingle() {
-  ${driller} --basename /tmp/driller/4/fi*                  > ${stdout}
-  status=$?
-  assertEquals "exit status"    "0"                         "${status}"
-  assertEquals "stdout"         "file"                      "$(cat ${stdout})"
-}
-
-function testBasenameWildcardFileMulti() {
-  ${driller} --basename /tmp/driller/4/*                    > ${stdout} 2> ${stderr}
-  status=$?
-  assertEquals "exit status"    "0"                         "${status}"
-  assertEquals "stdout"         "file
-link
-symlink"                        "$(cat ${stdout})"
-}
 
 function oneTimeSetUp() {
   running_dir=$(pwd)

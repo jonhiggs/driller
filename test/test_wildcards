@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+. functions.inc
+
+function testBasename() {
+  __run --basename /tmp/driller/1/fi*
+  assertEquals "one match"      "file"                      "$stdout"
+
+  __run --basename /tmp/driller/1/*
+  assertEquals "two matches"    "2"  "$(wc -w $stdout_file | awk '{print $1}')"
+}
+
+function testAbsolute() {
+  __run --absolute /tmp/driller/1/fi*
+  assertEquals "one match"      "/tmp/driller/1/file"       "$stdout"
+
+  __run --absolute /tmp/driller/1/*
+  assertEquals "two matches"    "2"  "$(wc -w $stdout_file | awk '{print $1}')"
+}
+
+function oneTimeSetUp() {
+  running_dir=$(pwd)
+  driller="${running_dir}/../driller"
+  stdout_file="/tmp/driller/stdout"
+  stderr_file="/tmp/driller/stderr"
+  mkdir -p /tmp/driller/1/
+  touch    /tmp/driller/1/file
+  ln       /tmp/driller/1/file /tmp/driller/1/link
+}
+
+# load and run shUnit2
+source ./shunit/src/shunit2
+
+# vim: ai ts=2 sw=2 et sts=2 ft=sh
