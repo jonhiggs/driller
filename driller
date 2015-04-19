@@ -17,8 +17,7 @@ EOF
 }
 
 function __strip_extraneous_slashes() {
-  read <<< $@
-  echo "${@:-$(cat /dev/stdin)}" | sed -E 's#/+#/#g'
+  echo "$@" | sed -E 's#/+#/#g'
 }
 
 function __dereference() {
@@ -42,22 +41,24 @@ function __dereference() {
 }
 
 function __qualify_dot_dot_slashes() {
-  read <<< $@
-  stdin=$(cat /dev/stdin)
+  path=$@
 
-  if [[ -d ${stdin} ]] && [[ ! -L ${stdin} ]]; then
-    dir=${stdin}
+  if [[ -d "$@" ]] && [[ ! -L $@ ]]; then
+    dir=$@
   else
-    dir=$(dirname -- "${stdin}")
-    file=$(basename -- "${stdin}")
+    dir=$(dirname -- "$@")
+    file=$(basename -- "$@")
   fi
 
-  cd "${dir}"
+  pushd "${dir}" &> /dev/null
   echo $(pwd)/${file}
+  popd &> /dev/null
 }
 
 function __clean_path() {
-  echo $@ | __qualify_dot_dot_slashes | __strip_extraneous_slashes
+  path=$@
+  path=$(__qualify_dot_dot_slashes "${path}")
+  __strip_extraneous_slashes ${path}
 }
 
 function __dirname() {
