@@ -37,7 +37,7 @@ function __dereference() {
   done
 
   pushd ${working_dir} > /dev/null
-  __clean_path ${path}
+  __clean_path "${path}"
   popd > /dev/null
 }
 
@@ -57,23 +57,22 @@ function __qualify_dot_dot_slashes() {
 }
 
 function __clean_path() {
-  read <<< $@
-  echo ${@:-$(cat /dev/stdin)} | __qualify_dot_dot_slashes | __strip_extraneous_slashes
+  echo $@ | __qualify_dot_dot_slashes | __strip_extraneous_slashes
 }
 
 function __dirname() {
   read <<< $@
   in=${@:-$(cat /dev/stdin)}
   if [[ -d $in ]]; then
-    __clean_path $in
+    __clean_path "${in}"
   else
-    dirname -- $in | __clean_path
+    __clean_path "$(dirname -- $in)"
   fi
 }
 
 function __filename() {
   [[ -e $1 ]] && [[ ! -d $1 ]] || fatal "Path isn't to a file"
-  basename -- $(__clean_path $1)
+  basename -- $(__clean_path "$1")
 }
 
 function __scm_dir() {
@@ -85,11 +84,11 @@ function __scm_root() {
   dir=$(__dirname ${dereferenced_file})
   until [[ ${dir} == "/" ]]; do
     if __scm_dir ${dir}; then
-      __clean_path ${dir}
+      __clean_path "${dir}"
       return 0
     fi
 
-    dir="$(__clean_path ${dir}/../)"
+    dir="$(__clean_path "${dir}/../")"
   done
 
   fatal "SCM dir not found"
@@ -138,7 +137,7 @@ arguments="$@"
 for a in ${arguments}; do
   a=$(__expand_tilde $a)
   if [[ -e "$a" ]] || [[ -L "$a" ]]; then
-    PATH_ARGS+=( "$(__clean_path $a)" )
+    PATH_ARGS+=( "$(__clean_path "$a")" )
   elif [[ "$a" =~ ^--[a-z\-]+$ ]]; then
     OPTION=$a
   elif [[ "$a" =~ ^-[a-z]$ ]]; then
