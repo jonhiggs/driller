@@ -27,16 +27,16 @@ function __dereference() {
   path=$(readlink ${@:-$(cat /dev/stdin)} || echo $@)
   count=0
 
-  while [[ -L ${path} ]]; do
+  while [[ -L "${path}" ]]; do
     if [[ ${count} -gt 30 ]]; then
       fatal "Symlink loop."
     else
-      path=$(readlink ${path})
+      path=$(readlink "${path}")
       count=$(( ${count} + 1 ))
     fi
   done
 
-  pushd ${working_dir} > /dev/null
+  pushd "${working_dir}" > /dev/null
   __clean_path "${path}"
   popd > /dev/null
 }
@@ -63,7 +63,7 @@ function __clean_path() {
 function __dirname() {
   read <<< $@
   in=${@:-$(cat /dev/stdin)}
-  if [[ -d $in ]]; then
+  if [[ -d "$in" ]]; then
     __clean_path "${in}"
   else
     __clean_path "$(dirname -- $in)"
@@ -83,7 +83,7 @@ function __scm_root() {
   dereferenced_file=$($0 --dereference $1)
   dir=$(__dirname ${dereferenced_file})
   until [[ ${dir} == "/" ]]; do
-    if __scm_dir ${dir}; then
+    if __scm_dir "${dir}"; then
       __clean_path "${dir}"
       return 0
     fi
@@ -135,7 +135,7 @@ arguments="$@"
 [[ -p /dev/stdin ]] && arguments="$arguments $(cat /dev/stdin)"
 
 for a in ${arguments}; do
-  a=$(__expand_tilde $a)
+  a=$(__expand_tilde "$a")
   if [[ -e "$a" ]] || [[ -L "$a" ]]; then
     PATH_ARGS+=( "$(__clean_path "$a")" )
   elif [[ "$a" =~ ^--[a-z\-]+$ ]]; then
@@ -147,14 +147,14 @@ done
 
 for element in $(seq 0 $((${#PATH_ARGS[@]} - 1))); do
   path=${PATH_ARGS[$element]}
-  [[ -z ${path} ]] && break
+  [[ -z "${path}" ]] && break
 
   case "${OPTION}" in
-    "--absolute"|"-a")             echo $path                            ;;
-    "--basename"|"-b")             [[ ! -d $path ]] && __filename $path  ;;
-    "--dereference"|"-D")          __dereference $path                   ;;
-    "--dirname"|"-d")              __dirname $path                       ;;
-    "--scm"|"--scm-root"|"-s")     __scm_root $path                      ;;
+    "--absolute"|"-a")             echo "$path"                              ;;
+    "--basename"|"-b")             [[ ! -d "$path" ]] && __filename "$path"  ;;
+    "--dereference"|"-D")          __dereference "$path"                     ;;
+    "--dirname"|"-d")              __dirname "$path"                         ;;
+    "--scm"|"--scm-root"|"-s")     __scm_root "$path"                        ;;
   esac
 done
 
