@@ -55,22 +55,42 @@ function __qualify_dot_dot_slashes() {
   popd &> /dev/null
 }
 
+function __set_trailing_slash() {
+  path=$@
+  if [[ ${path} != "/" ]]; then
+    # strip slash before testing.
+    path=$(echo ${path} | sed -E 's#\/?$##')
+    if [[ -d "${path}" ]] && [[ ! -L "${path}" ]]; then
+      # make sure it has a trailing slash
+      path=$(echo ${path} | sed -E 's#\/?$#/#')
+    else
+      # make sure it does not have a trailing slash
+      path=$(echo ${path} | sed -E 's#\/?$##')
+    fi
+  fi
+  echo ${path}
+}
+
+
 function __clean_path() {
   path=$@
   path=$(__expand_tilde "${path}")
   path=$(__qualify_dot_dot_slashes "${path}")
-  path=$(__strip_extraneous_slashes ${path})
+  path=$(__strip_extraneous_slashes "${path}")
+  path=$(__set_trailing_slash "${path}")
   echo ${path}
 }
 
 function __dirname() {
-  read <<< $@
-  in=${@:-$(cat /dev/stdin)}
-  if [[ -d "$in" ]]; then
-    __clean_path "${in}"
-  else
-    __clean_path "$(dirname -- $in)"
+  path=$(__clean_path $@)
+  if [[ ! -d "${path}" ]]; then
+    path=$(dirname -- "${path}")
+    if [[ $? -ne 0 ]]; then
+      echo "Fatal: dirname isn't happy with ${path}" > /dev/stderr
+      exit 1
+    fi
   fi
+  __clean_path "${path}"
 }
 
 function __filename() {
@@ -150,7 +170,6 @@ done
 if [[ -p /dev/stdin ]]; then
   PATH_ARGS+=( "$(__clean_path $(cat /dev/stdin))" )
 fi
-
 
 for element in $(seq 0 $((${#PATH_ARGS[@]} - 1))); do
   path=${PATH_ARGS[$element]}

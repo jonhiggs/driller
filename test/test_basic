@@ -18,10 +18,6 @@ function testSwitches() {
 function testDirname() {
   __run --dirname /tmp/driller/1/1/file
   assertEquals "absolute"         "/tmp/driller/1/1/"         "$stdout"
-
-  __run --dirname ./
-  status=$?
-  assertEquals "relative"         "${running_dir}/"           "$stdout"
 }
 
 function testBasename() {
@@ -41,7 +37,6 @@ function testStdin() {
 
   echo "~" | ${driller} --absolute > ${stdout_file}
   assertEquals "absolute"         "${HOME}/"                       "$(cat $stdout_file)"
-
 }
 
 function oneTimeSetUp() {

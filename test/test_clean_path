@@ -20,6 +20,9 @@ function testSimplePaths() {
   __run --absolute /tmp/driller/2/symlink_to_dir
   assertEquals "symlink to directory"         "/tmp/driller/2/symlink_to_dir" "$stdout"
 
+  __run --absolute /tmp/driller/2/symlink_to_dir/
+  assertEquals "symlink to directory with slash" "/tmp/driller/2/symlink_to_dir" "$stdout"
+
   ${driller} --absolute /tmp/driller/1/a\ file\ with\ spaces > ${stdout_file}
   assertEquals "file with spaces"             "/tmp/driller/1/a file with spaces" "$(cat $stdout_file)"
 
