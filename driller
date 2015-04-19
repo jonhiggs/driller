@@ -5,12 +5,12 @@ USAGE:
   $(basename -- $0) [OPTION] <dir>
 
 OPTIONS:
-  -a, --absolute            Provide the absolute path (default).
-  -b, --basename            Provide the filename from a path.
-  -D, --dereference         Dereference a link all the way down to it's source.
-  -d, --dirname             Provide the dirname from a path.
+  -a, --absolute            Absolute path (default).
+  -b, --basename            Strip directory from path.
+  -D, --dereference         Recursively find the ultimate target of a symlink.
+  -d, --dirname             Strip file from path.
   -h, --help                This help.
-  -s, --scm-root            Find the scm root (git or hg).
+  -s, --scm-root            Find the SCM root (git or hg) for file.
 
 EOF
   exit 0

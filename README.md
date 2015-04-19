@@ -1,14 +1,13 @@
 # driller
 
-Driller's purpose is to normalise paths.
+Driller's primary purpose is to clean paths.
 
-- Paths like `/this/is/a/../../path/` will turn into `/this/path/`.
-
-- Directories will always end in a trailing slash, files will never end in a slash.
-
-- Wildcards will be honoured.
-
-- Easily find the root of a Git or Mercurial repository.
+- Tilde's (~) are always expanded.
+- Directories always have a trailing slash.
+- Files never have a trailing slash (including symlinks to directories).
+- Collapse ../ in paths.
+- Remove // from paths.
+- Wildcards are honoured and multiple results will be returned.
 
 
 ## Requirements
@@ -23,15 +22,13 @@ Nothing special...
 
 ## Options
 
-| Switch        | Description                             |
-|---------------|-----------------------------------------|
-| --absolute    | Provide the absolute path (default).    |
-| --basename    | Provide the filename from a path.       |
-| --dereference | Find the source path of a symlink.      |
-| --dirname     | Provide the dirname from a path.        |
-| --parent      | Return clean path of parent directory.  |
-| --scm         | Find the SCM root (git or hg).          |
-
+| Switch            | Description                                           |
+|-------------------|-------------------------------------------------------|
+| -a, --absolute    | Absolute path (default).                              |
+| -b, --basename    | Strip directory from path.                            |
+| -D, --dereference | Recursively find the ultimate target of a symlink.    |
+| -d, --dirname     | Strip file from path.                                 |
+| -s, --scm         | Find the SCM root (git or hg) for file.               |
 
 ## Notes
 
