@@ -53,7 +53,7 @@ function __dereference() {
 }
 
 function __qualify_dot_dot_slashes() {
-  if [[ -d "${path}" ]] && [[ ! -L ${path} ]]; then
+  if [[ -d "${path}" ]] && [[ ! -L "${path}" ]]; then
     dir=$1
   else
     dir=$(dirname -- "${path}")
@@ -67,7 +67,7 @@ function __qualify_dot_dot_slashes() {
 
 function __set_trailing_slash() {
   path=$1
-  if [[ ${path} != "/" ]]; then
+  if [[ "${path}" != "/" ]]; then
     # strip slash before testing.
     path=$(echo ${path} | sed -E 's#\/?$##')
     if [[ -d "${path}" ]] && [[ ! -L "${path}" ]]; then
@@ -93,12 +93,12 @@ function __clean_path() {
 
 function __dirname() {
   path=$1
-  [[ ! -d ${path} ]] && path=$(dirname -- ${path})
+  [[ ! -d "${path}" ]] && path=$(dirname -- ${path})
   __clean_path "${path}"
 }
 
 function __filename() {
-  basename -- $(__clean_path "$1")
+  basename -- "$(__clean_path "$1")"
 }
 
 function __scm_dir() {

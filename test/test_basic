@@ -33,6 +33,9 @@ function testBasename() {
   __run --basename /tmp/driller/1/1/file
   assertEquals "absolute"         "file"                      "$stdout"
 
+  ${driller} --basename /tmp/driller/1/1/file\ with\ spaces > ${stdout_file}
+  assertEquals "absolute with spaces" "file with spaces"        "$(cat $stdout_file)"
+
   __run --basename ./test
   assertEquals "relative"         "test"                      "$stdout"
 }
@@ -55,6 +58,7 @@ function oneTimeSetUp() {
   stderr_file="/tmp/driller/stderr"
   mkdir -p /tmp/driller/1/1
   touch    /tmp/driller/1/1/file
+  touch    "/tmp/driller/1/1/file with spaces"
 }
 
 # load and run shUnit2
