@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 dir=$(dirname $0)
-tmpfile=$(mktemp -t driller)
+tmpfile=$(mktemp -t driller.XXX)
 
 for test in ${dir}/test_*; do
   echo ${test}
