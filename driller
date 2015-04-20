@@ -1,5 +1,5 @@
 #!/usr/bin/env bash -e
-VERSION="v0.3.0"
+VERSION="v0.3.2"
 
 function usage() {
   cat <<EOF
