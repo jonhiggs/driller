@@ -79,14 +79,8 @@ function __clean_path() {
 }
 
 function __dirname() {
-  path=$(__clean_path $@)
-  if [[ ! -d "${path}" ]]; then
-    path=$(dirname -- "${path}")
-    if [[ $? -ne 0 ]]; then
-      echo "Fatal: dirname isn't happy with ${path}" > /dev/stderr
-      exit 1
-    fi
-  fi
+  path=$@
+  [[ ! -d ${path} ]] && path=$(dirname -- ${path})
   __clean_path "${path}"
 }
 

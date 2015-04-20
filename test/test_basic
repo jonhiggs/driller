@@ -17,7 +17,10 @@ function testSwitches() {
 
 function testDirname() {
   __run --dirname /tmp/driller/1/1/file
-  assertEquals "absolute"         "/tmp/driller/1/1/"         "$stdout"
+  assertEquals "absolute file"            "/tmp/driller/1/1/"         "$stdout"
+
+  __run --dirname /tmp/driller/1/1/
+  assertEquals "absolute directory"       "/tmp/driller/1/1/"         "$stdout"
 }
 
 function testBasename() {
