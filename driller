@@ -91,7 +91,6 @@ function __dirname() {
 }
 
 function __filename() {
-  [[ -e $1 ]] && [[ ! -d $1 ]] || fatal "Path isn't to a file"
   basename -- $(__clean_path "$1")
 }
 
