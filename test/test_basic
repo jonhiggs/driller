@@ -7,7 +7,7 @@ function testSwitches() {
   assertEquals "help stdout"         "USAGE:"                    "$(head -n1 ${stdout_file})"
 
   __run --version
-  assertEquals "version stdout"         "0"                      "$(cat ${stdout_file} | grep -E '^v\d+\.\d\.\d$' &> /dev/null; echo $?)"
+  assertEquals "version stdout"         "0"                      "$(cat ${stdout_file} | grep -E '^v[0-9]+\.[0-9]\.[0-9]$' &> /dev/null; echo $?)"
 
   __run
   assertEquals "no_arguments exit status"    "0"                 "$status"
