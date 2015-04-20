@@ -24,6 +24,11 @@ function version() {
   exit 0
 }
 
+function fatal() {
+  echo "Fatal: $1" > /dev/stderr
+  exit 1
+}
+
 function __strip_extraneous_slashes() {
   echo "$1" | sed -E 's#/+#/#g'
 }
@@ -110,11 +115,6 @@ function __scm_root() {
   done
 
   echo $dir
-}
-
-function fatal() {
-  echo "Fatal: $1" > /dev/stderr
-  exit 1
 }
 
 function __user_home() {
