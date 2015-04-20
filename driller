@@ -25,12 +25,12 @@ function version() {
 }
 
 function __strip_extraneous_slashes() {
-  echo "$@" | sed -E 's#/+#/#g'
+  echo "$1" | sed -E 's#/+#/#g'
 }
 
 function __dereference() {
-  working_dir=$(dirname -- $@)
-  path=$(readlink -- $@ || echo $@)
+  working_dir=$(dirname -- $1)
+  path=$(readlink -- $1 || echo $1)
   count=0
 
   while [[ -L "${path}" ]]; do
@@ -49,7 +49,7 @@ function __dereference() {
 
 function __qualify_dot_dot_slashes() {
   if [[ -d "${path}" ]] && [[ ! -L ${path} ]]; then
-    dir=$@
+    dir=$1
   else
     dir=$(dirname -- "${path}")
     file=$(basename -- "${path}")
@@ -61,7 +61,7 @@ function __qualify_dot_dot_slashes() {
 }
 
 function __set_trailing_slash() {
-  path=$@
+  path=$1
   if [[ ${path} != "/" ]]; then
     # strip slash before testing.
     path=$(echo ${path} | sed -E 's#\/?$##')
@@ -78,7 +78,7 @@ function __set_trailing_slash() {
 
 
 function __clean_path() {
-  path=$@
+  path=$1
   path=$(__expand_tilde "${path}")
   path=$(__qualify_dot_dot_slashes "${path}")
   path=$(__strip_extraneous_slashes "${path}")
@@ -87,7 +87,7 @@ function __clean_path() {
 }
 
 function __dirname() {
-  path=$@
+  path=$1
   [[ ! -d ${path} ]] && path=$(dirname -- ${path})
   __clean_path "${path}"
 }
