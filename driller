@@ -21,9 +21,8 @@ function __strip_extraneous_slashes() {
 }
 
 function __dereference() {
-  read <<< $@
-  working_dir=$(dirname ${@:-$(cat /dev/stdin)})
-  path=$(readlink ${@:-$(cat /dev/stdin)} || echo $@)
+  working_dir=$(dirname -- $@)
+  path=$(readlink -- $@ || echo $@)
   count=0
 
   while [[ -L "${path}" ]]; do
