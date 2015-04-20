@@ -128,14 +128,11 @@ function __user_home() {
 
 function __expand_tilde() {
   path=$1
-
   user_section=$(echo ${path} | grep -o '^~[^\/]*')
+  [[ -z ${user_section} ]] && echo ${path} && return 0
   path_section=$(echo ${path} | grep -o '\/.*$')
 
-  if [[ -z ${user_section} ]]; then
-    echo ${path}
-    return 0
-  elif [[ ${user_section} == "~" ]]; then
+  if [[ ${user_section} == "~" ]]; then
     user=${USER}
   else
     user=$(echo ${user_section} | sed 's/~//g')
