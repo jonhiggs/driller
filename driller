@@ -41,13 +41,11 @@ function __dereference() {
 }
 
 function __qualify_dot_dot_slashes() {
-  path=$@
-
-  if [[ -d "$@" ]] && [[ ! -L $@ ]]; then
+  if [[ -d "${path}" ]] && [[ ! -L ${path} ]]; then
     dir=$@
   else
-    dir=$(dirname -- "$@")
-    file=$(basename -- "$@")
+    dir=$(dirname -- "${path}")
+    file=$(basename -- "${path}")
   fi
 
   pushd "${dir}" &> /dev/null
