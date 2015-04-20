@@ -29,6 +29,7 @@ Nothing special...
 | -D, --dereference | Recursively find the ultimate target of a symlink.    |
 | -d, --dirname     | Strip file from path.                                 |
 | -s, --scm         | Find the SCM root (git or hg) for file.               |
+|     --version     | Version information.                                  |
 
 ## Notes
 

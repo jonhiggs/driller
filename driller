@@ -1,4 +1,6 @@
 #!/usr/bin/env bash -e
+VERSION="v0.3.0"
+
 function usage() {
   cat <<EOF
 USAGE:
@@ -11,8 +13,14 @@ OPTIONS:
   -d, --dirname             Strip file from path.
   -h, --help                This help.
   -s, --scm-root            Find the SCM root (git or hg) for file.
+      --version             Version information.
 
 EOF
+  exit 0
+}
+
+function version() {
+  echo ${VERSION}
   exit 0
 }
 
@@ -173,4 +181,5 @@ done
 
 case "${OPTION}" in
   "--help")                   usage                                 ;;
+  "--version")                version                               ;;
 esac
