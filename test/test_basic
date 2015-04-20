@@ -22,6 +22,9 @@ function testDirname() {
   __run --dirname /tmp/driller/1/1/file
   assertEquals "absolute file"            "/tmp/driller/1/1/"         "$stdout"
 
+  __run --dirname /tmp/driller/1/1/file\ with\ spaces
+  assertEquals "absolute file with spaces" "/tmp/driller/1/1/"        "$stdout"
+
   __run --dirname /tmp/driller/1/1/
   assertEquals "absolute directory"       "/tmp/driller/1/1/"         "$stdout"
 }
