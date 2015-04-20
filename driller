@@ -93,18 +93,15 @@ function __scm_dir() {
 }
 
 function __scm_root() {
-  dereferenced_file=$($0 --dereference $1)
-  dir=$(__dirname ${dereferenced_file})
-  until [[ ${dir} == "/" ]]; do
-    if __scm_dir "${dir}"; then
-      __clean_path "${dir}"
-      return 0
-    fi
-
+  path=$(__dereference $1)
+  dir=$(__dirname ${path})
+  while true; do
+    [[ "${dir}" == "/" ]] && fatal "SCM dir not found"
+    __scm_dir "${dir}" && break
     dir="$(__clean_path "${dir}/../")"
   done
 
-  fatal "SCM dir not found"
+  echo $dir
 }
 
 function fatal() {
