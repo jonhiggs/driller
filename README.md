@@ -1,6 +1,6 @@
 # driller
 
-Driller's primary purpose is to clean paths.
+Driller's primary purpose is to clean and standardise paths.
 
 - Tilde's (~) are always expanded.
 - Directories always have a trailing slash.
