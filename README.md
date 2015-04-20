@@ -22,7 +22,7 @@ To install run the following commands in sequence.
 ```bash
 dest="/usr/local/sbin/driller"
 tag="latest"
-sudo curl https://raw.githubusercontent.com/jonhiggs/driller/${tag}/driller -O "${dest}"
+sudo wget https://raw.githubusercontent.com/jonhiggs/driller/${tag}/driller -O "${dest}"
 chmod +x "${dest}"
 ```
 
