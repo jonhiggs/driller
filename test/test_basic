@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-. functions.inc
+source $(dirname $0)/functions.inc
 
 function testSwitches() {
   __run --help
@@ -52,7 +52,9 @@ function testStdin() {
 }
 
 function oneTimeSetUp() {
+  pushd $(dirname $0) &> /dev/null
   running_dir=$(pwd)
+  popd &> /dev/null
   driller="${running_dir}/../driller"
   stdout_file="/tmp/driller/stdout"
   stderr_file="/tmp/driller/stderr"
@@ -62,6 +64,6 @@ function oneTimeSetUp() {
 }
 
 # load and run shUnit2
-source ./shunit/src/shunit2
+source $(dirname $0)/shunit/src/shunit2
 
 # vim: ai ts=2 sw=2 et sts=2 ft=sh
