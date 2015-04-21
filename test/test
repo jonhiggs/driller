@@ -4,14 +4,13 @@ dir=$(dirname $0)
 tmpfile=$(mktemp -t driller.XXX)
 
 for test in ${dir}/test_*; do
-  echo ${test}
+  echo -n ${test}
   ./${test} &> ${tmpfile}
   if [[ $? -eq 0 ]]; then
-    echo "ok"
+    echo " ok"
   else
     cat ${tmpfile}
   fi
-  echo "---------------------------------"
 done
 
 rm $tmpfile
