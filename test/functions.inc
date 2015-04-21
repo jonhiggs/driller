@@ -5,8 +5,33 @@ function __run() {
   stderr=$(cat ${stderr_file})
 }
 
+function oneTimeSetUp() {
+  test_dir=$(mktemp -d -t driller.XXX)
+  pushd $(dirname $0) &> /dev/null
+  running_dir=$(pwd)
+  popd &> /dev/null
+  driller="${running_dir}/../driller"
+  stdout_file="${test_dir}/stdout"
+  stderr_file="${test_dir}/stderr"
+
+  mkdir -p ${test_dir}/1 ${test_dir}/2
+  touch "${test_dir}/1/file"
+  touch "${test_dir}/1/a file with spaces"
+  touch "${test_dir}/1/-file"
+  touch "${test_dir}/1/--help"
+  pushd "${test_dir}/2" &> /dev/null
+  ln -s ../1/file symlink
+  ln ../1/file hardlink
+  ln -s ../1/ symlink_to_dir
+  popd &> /dev/null
+
+  touch ${HOME}/.driller_tmpfile
+  mkdir ${HOME}/.driller_tmpdir
+  touch ${HOME}/.driller_tmpdir/file
+}
+
 function oneTimeTearDown() {
-  rm -Rf /tmp/driller
+  rm -Rf ${test_dir}
   rm -Rf ${home_tmp}
   rm -f ${HOME}/.driller_tmpfile
   rm -Rf ${HOME}/.driller_tmpdir

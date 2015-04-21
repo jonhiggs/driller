@@ -2,47 +2,47 @@
 source $(dirname $0)/functions.inc
 
 function testSimplePaths() {
-  __run --absolute /tmp/driller/1
-  assertEquals "directory"                    "/tmp/driller/1/"       "$stdout"
+  __run --absolute ${test_dir}/1
+  assertEquals "directory"                    "${test_dir}/1/"       "$stdout"
 
-  __run --absolute /tmp/driller/1/file
-  assertEquals "file"                         "/tmp/driller/1/file"   "$stdout"
+  __run --absolute ${test_dir}/1/file
+  assertEquals "file"                         "${test_dir}/1/file"   "$stdout"
 
   __run --absolute /dev/null
   assertEquals "device"                       "/dev/null"             "$stdout"
 
-  __run --absolute /tmp/driller/2/hardlink
-  assertEquals "hardlink"                     "/tmp/driller/2/hardlink" "$stdout"
+  __run --absolute ${test_dir}/2/hardlink
+  assertEquals "hardlink"                     "${test_dir}/2/hardlink" "$stdout"
 
-  __run --absolute /tmp/driller/2/symlink
-  assertEquals "symlink"                      "/tmp/driller/2/symlink" "$stdout"
+  __run --absolute ${test_dir}/2/symlink
+  assertEquals "symlink"                      "${test_dir}/2/symlink" "$stdout"
 
-  __run --absolute /tmp/driller/2/symlink_to_dir
-  assertEquals "symlink to directory"         "/tmp/driller/2/symlink_to_dir" "$stdout"
+  __run --absolute ${test_dir}/2/symlink_to_dir
+  assertEquals "symlink to directory"         "${test_dir}/2/symlink_to_dir" "$stdout"
 
-  __run --absolute /tmp/driller/2/symlink_to_dir/
-  assertEquals "symlink to directory with slash" "/tmp/driller/2/symlink_to_dir" "$stdout"
+  __run --absolute ${test_dir}/2/symlink_to_dir/
+  assertEquals "symlink to directory with slash" "${test_dir}/2/symlink_to_dir" "$stdout"
 
-  ${driller} --absolute /tmp/driller/1/a\ file\ with\ spaces > ${stdout_file}
-  assertEquals "file with spaces"             "/tmp/driller/1/a file with spaces" "$(cat $stdout_file)"
+  ${driller} --absolute ${test_dir}/1/a\ file\ with\ spaces > ${stdout_file}
+  assertEquals "file with spaces"             "${test_dir}/1/a file with spaces" "$(cat $stdout_file)"
 
-  pushd /tmp/driller/1/ &> /dev/null
+  pushd ${test_dir}/1/ &> /dev/null
   __run --absolute -file
-  assertEquals "file that looks like switch"  "/tmp/driller/1/-file"  "$stdout"
+  assertEquals "file that looks like switch"  "${test_dir}/1/-file"  "$stdout"
 
   __run --absolute -- --help
-  assertEquals "file that looks like help"    "/tmp/driller/1/--help" "$stdout"
+  assertEquals "file that looks like help"    "${test_dir}/1/--help" "$stdout"
 
   __run --absolute ~/.driller_tmpfile
   assertEquals "expand ~"                     "${HOME}/.driller_tmpfile" "$stdout"
 }
 
 function testWeirdPaths() {
-  __run --absolute /tmp/driller/1/../
-  assertEquals "/tmp/driller/1/../"           "/tmp/driller/"         "$stdout"
+  __run --absolute ${test_dir}/1/../
+  assertEquals "test_dir/1/../"           "${test_dir}/"         "$stdout"
 
-  __run --absolute /tmp/driller/../driller/1/../
-  assertEquals "/tmp/driller/../driller/1/../" "/tmp/driller/"        "$stdout"
+  __run --absolute ${test_dir}/2/../1/../
+  assertEquals "test_dir/2/../1/../" "${test_dir}/"        "$stdout"
 
   __run --absolute //..//
   assertEquals "//..//"                         "/"                   "$stdout"
@@ -66,30 +66,6 @@ function testHomeSubstitution() {
 
   __run --absolute "~${USER}/.driller_tmpdir/file"
   assertEquals "~${USER}/.driller_tmpdir/file" "${HOME}/.driller_tmpdir/file" "$stdout"
-}
-
-function oneTimeSetUp() {
-  pushd $(dirname $0) &> /dev/null
-  running_dir=$(pwd)
-  popd &> /dev/null
-  driller="${running_dir}/../driller"
-  stdout_file="/tmp/driller/stdout"
-  stderr_file="/tmp/driller/stderr"
-
-  mkdir -p /tmp/driller/1 /tmp/driller/2
-  touch /tmp/driller/1/file
-  touch "/tmp/driller/1/a file with spaces"
-  touch "/tmp/driller/1/-file"
-  touch "/tmp/driller/1/--help"
-  pushd /tmp/driller/2 &> /dev/null
-  ln -s ../1/file symlink
-  ln ../1/file hardlink
-  ln -s ../1/ symlink_to_dir
-  popd &> /dev/null
-
-  touch ${HOME}/.driller_tmpfile
-  mkdir ${HOME}/.driller_tmpdir
-  touch ${HOME}/.driller_tmpdir/file
 }
 
 # load and run shUnit2
