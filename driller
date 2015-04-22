@@ -35,7 +35,7 @@ function __strip_extraneous_slashes() {
 }
 
 function __dereference() {
-  working_dir=$(dirname -- $1)
+  working_dir=$(dirname -- "$1")
   path=$(readlink -- $1 || echo $1)
   count=0
 
@@ -94,7 +94,7 @@ function __clean_path() {
 
 function __dirname() {
   path=$1
-  [[ ! -d "${path}" ]] && path=$(dirname -- ${path})
+  [[ ! -d "${path}" ]] && path=$(dirname -- "${path}")
   __clean_path "${path}"
 }
 

@@ -13,28 +13,28 @@ function testSwitches() {
   assertEquals "no_arguments exit status"    "0"                 "$status"
   assertEquals "no_arguments stdout"         "USAGE:"            "$(head -n1 ${stdout_file})"
 
-  __run /tmp/driller/1/
+  __run ${test_dir}/1/
   assertEquals "no_action exit status"    "0"                    "$status"
-  assertEquals "no_action stdout"         "/tmp/driller/1/"      "$stdout"
+  assertEquals "no_action stdout"         "${test_dir}/1/"      "$stdout"
 }
 
 function testDirname() {
-  __run --dirname /tmp/driller/1/1/file
-  assertEquals "absolute file"            "/tmp/driller/1/1/"         "$stdout"
+  __run --dirname ${test_dir}/1/file
+  assertEquals "absolute file"            "${test_dir}/1/"         "$stdout"
 
-  __run --dirname /tmp/driller/1/1/file\ with\ spaces
-  assertEquals "absolute file with spaces" "/tmp/driller/1/1/"        "$stdout"
+  ${driller} --dirname ${test_dir}/1/a\ file\ with\ spaces > ${stdout_file}
+  assertEquals "absolute file with spaces" "${test_dir}/1/"   "$(cat $stdout_file)"
 
-  __run --dirname /tmp/driller/1/1/
-  assertEquals "absolute directory"       "/tmp/driller/1/1/"         "$stdout"
+  __run --dirname ${test_dir}/1/
+  assertEquals "absolute directory"       "${test_dir}/1/"         "$stdout"
 }
 
 function testBasename() {
-  __run --basename /tmp/driller/1/1/file
+  __run --basename ${test_dir}/1/file
   assertEquals "absolute"         "file"                      "$stdout"
 
-  ${driller} --basename /tmp/driller/1/1/file\ with\ spaces > ${stdout_file}
-  assertEquals "absolute with spaces" "file with spaces"        "$(cat $stdout_file)"
+  ${driller} --basename ${test_dir}/1/a\ file\ with\ spaces > ${stdout_file}
+  assertEquals "absolute with spaces" "a file with spaces"        "$(cat $stdout_file)"
 
   __run --basename ./test
   assertEquals "relative"         "test"                      "$stdout"
@@ -49,18 +49,6 @@ function testStdin() {
 
   echo "~" | ${driller} --absolute > ${stdout_file}
   assertEquals "absolute"         "${HOME}/"                       "$(cat $stdout_file)"
-}
-
-function oneTimeSetUp() {
-  pushd $(dirname $0) &> /dev/null
-  running_dir=$(pwd)
-  popd &> /dev/null
-  driller="${running_dir}/../driller"
-  stdout_file="/tmp/driller/stdout"
-  stderr_file="/tmp/driller/stderr"
-  mkdir -p /tmp/driller/1/1
-  touch    /tmp/driller/1/1/file
-  touch    "/tmp/driller/1/1/file with spaces"
 }
 
 # load and run shUnit2
