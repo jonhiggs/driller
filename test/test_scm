@@ -2,60 +2,39 @@
 source $(dirname $0)/functions.inc
 
 function testScmGit() {
-  __run --scm /tmp/driller/git
-  assertEquals "root"                 "/tmp/driller/git/"           "$stdout"
+  __run --scm ${test_dir}/git
+  assertEquals "root"                 "${test_dir}/git/"           "$stdout"
 
-  __run --scm /tmp/driller/git/1
-  assertEquals "directory"            "/tmp/driller/git/"           "$stdout"
+  __run --scm ${test_dir}/git/1
+  assertEquals "directory"            "${test_dir}/git/"           "$stdout"
 
-  __run --scm /tmp/driller/git/file
-  assertEquals "file"                 "/tmp/driller/git/"           "$stdout"
+  __run --scm ${test_dir}/git/file
+  assertEquals "file"                 "${test_dir}/git/"           "$stdout"
 
-  __run --scm /tmp/driller/git/1/2/3/4/file
-  assertEquals "deep file"            "/tmp/driller/git/"           "$stdout"
+  __run --scm ${test_dir}/git/1/2/3/4/file
+  assertEquals "deep file"            "${test_dir}/git/"           "$stdout"
 
-  __run --scm /tmp/driller/git/symlink
-  assertEquals "internal symlink"     "/tmp/driller/git/"           "$stdout"
+  __run --scm ${test_dir}/git/symlink
+  assertEquals "internal symlink"     "${test_dir}/git/"           "$stdout"
 
-  __run --scm /tmp/driller/git_symlink
-  assertEquals "external symlink"     "/tmp/driller/git/"           "$stdout"
+  __run --scm ${test_dir}/git_symlink
+  assertEquals "external symlink"     "${test_dir}/git/"           "$stdout"
 
-  __run --scm /tmp/driller/
+  __run --scm ${test_dir}/
   assertEquals "non-scm stdout"       ""                            "$stdout"
   assertEquals "non-scm stderr"       "Fatal: SCM dir not found"    "$stderr"
   assertEquals "non-scm exit status"  "1"                           "$status"
 }
 
 function testScmMercurial() {
-  __run --scm /tmp/driller/hg
-  assertEquals "root"                 "/tmp/driller/hg/"           "$stdout"
+  __run --scm ${test_dir}/hg
+  assertEquals "root"                 "${test_dir}/hg/"           "$stdout"
 
-  __run --scm /tmp/driller/hg/1
-  assertEquals "directory"            "/tmp/driller/hg/"           "$stdout"
+  __run --scm ${test_dir}/hg/1
+  assertEquals "directory"            "${test_dir}/hg/"           "$stdout"
 
-  __run --scm /tmp/driller/hg/file
-  assertEquals "file"                 "/tmp/driller/hg/"           "$stdout"
-}
-
-function oneTimeSetUp() {
-  pushd $(dirname $0) &> /dev/null
-  running_dir=$(pwd)
-  popd &> /dev/null
-  driller="${running_dir}/../driller"
-  stdout_file="/tmp/driller/stdout"
-  stderr_file="/tmp/driller/stderr"
-
-  mkdir -p /tmp/driller/git/.git
-  mkdir -p /tmp/driller/git/1
-  mkdir -p /tmp/driller/git/1/2/3/4/
-  touch    /tmp/driller/git/1/2/3/4/file
-  touch    /tmp/driller/git/file
-  ln -s    /tmp/driller/git/1 /tmp/driller/git/symlink
-  ln -s    /tmp/driller/git/1 /tmp/driller/git_symlink
-
-  mkdir -p /tmp/driller/hg/.hg
-  mkdir -p /tmp/driller/hg/1
-  touch    /tmp/driller/hg/file
+  __run --scm ${test_dir}/hg/file
+  assertEquals "file"                 "${test_dir}/hg/"           "$stdout"
 }
 
 # load and run shUnit2

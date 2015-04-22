@@ -34,6 +34,18 @@ function oneTimeSetUp() {
   ln -s ../1/ symlink_to_dir
   popd &> /dev/null
 
+  mkdir -p ${test_dir}/git/.git
+  mkdir -p ${test_dir}/git/1
+  mkdir -p ${test_dir}/git/1/2/3/4/
+  touch    ${test_dir}/git/1/2/3/4/file
+  touch    ${test_dir}/git/file
+  ln -s    ${test_dir}/git/1 ${test_dir}/git/symlink
+  ln -s    ${test_dir}/git/1 ${test_dir}/git_symlink
+
+  mkdir -p ${test_dir}/hg/.hg
+  mkdir -p ${test_dir}/hg/1
+  touch    ${test_dir}/hg/file
+
   touch ${HOME}/.driller_tmpfile
   mkdir ${HOME}/.driller_tmpdir
   touch ${HOME}/.driller_tmpdir/file
