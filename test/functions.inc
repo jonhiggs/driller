@@ -7,9 +7,8 @@ function __run() {
 
 function oneTimeSetUp() {
   test_dir=$(mktemp -d -t driller.XXX)
-  pushd $(dirname $0) &> /dev/null
-  running_dir=$(pwd)
-  popd &> /dev/null
+  realpath=$(which realpath || which grealpath)
+  running_dir=$(${realpath} -- $(dirname $0))
   driller="${running_dir}/../driller"
   stdout_file="${test_dir}/stdout"
   stderr_file="${test_dir}/stderr"
