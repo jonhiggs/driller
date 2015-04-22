@@ -6,7 +6,7 @@ function testBasename() {
   assertEquals "one match"      "file"                      "$stdout"
 
   __run --basename /tmp/driller/1/*
-  assertEquals "two matches"    "2"  "$(wc -w $stdout_file | awk '{print $1}')"
+  assertEquals "five matches"    "4"  "$(wc -w $stdout_file | awk '{print $1}')"
 }
 
 function testAbsolute() {
@@ -14,19 +14,7 @@ function testAbsolute() {
   assertEquals "one match"      "/tmp/driller/1/file"       "$stdout"
 
   __run --absolute /tmp/driller/1/*
-  assertEquals "two matches"    "2"  "$(wc -w $stdout_file | awk '{print $1}')"
-}
-
-function oneTimeSetUp() {
-  pushd $(dirname $0) &> /dev/null
-  running_dir=$(pwd)
-  popd &> /dev/null
-  driller="${running_dir}/../driller"
-  stdout_file="/tmp/driller/stdout"
-  stderr_file="/tmp/driller/stderr"
-  mkdir -p /tmp/driller/1/
-  touch    /tmp/driller/1/file
-  ln       /tmp/driller/1/file /tmp/driller/1/link
+  assertEquals "five matches"    "4"  "$(wc -w $stdout_file | awk '{print $1}')"
 }
 
 # load and run shUnit2
