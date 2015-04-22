@@ -13,12 +13,22 @@ function oneTimeSetUp() {
   stdout_file="${test_dir}/stdout"
   stderr_file="${test_dir}/stderr"
 
-  mkdir -p ${test_dir}/1 ${test_dir}/2
+  mkdir -p ${test_dir}/1 ${test_dir}/2 ${test_dir}/3
   touch "${test_dir}/1/file"
   touch "${test_dir}/1/a file with spaces"
   touch "${test_dir}/1/-file"
   touch "${test_dir}/1/--help"
   pushd "${test_dir}/2" &> /dev/null
+  touch ${test_dir}/3/file
+  ln -s /dev/null ${test_dir}/3/absolute_symlink
+  ln -s ${test_dir}/3/absolute_symlink ${test_dir}/3/symlink_to_symlink
+  ln -s ${test_dir}/3/linkloop2 ${test_dir}/3/linkloop1
+  ln -s ${test_dir}/3/linkloop1 ${test_dir}/3/linkloop2
+
+  pushd ${test_dir}/3 &> /dev/null
+  ln -s ../1/ relative_symlink
+  popd &> /dev/null
+
   ln -s ../1/file symlink
   ln ../1/file hardlink
   ln -s ../1/ symlink_to_dir

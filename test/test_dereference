@@ -2,50 +2,30 @@
 source $(dirname $0)/functions.inc
 
 function testTargetPathTypes() {
-  __run --dereference /tmp/driller/1/absolute_symlink
+  __run --dereference ${test_dir}/3/absolute_symlink
   assertEquals "absolute"         "/dev/null"                 "$stdout"
 
-  __run --dereference /tmp/driller/2/relative_symlink
-  assertEquals "relative"         "/tmp/driller/1/"           "$stdout"
+  __run --dereference ${test_dir}/3/relative_symlink
+  assertEquals "relative"         "${test_dir}/1/"           "$stdout"
 
-  __run --dereference /tmp/driller/1/symlink_to_symlink
+  __run --dereference ${test_dir}/3/symlink_to_symlink
   assertEquals "symlink"          "/dev/null"                 "$stdout"
 }
 
 function testLinkLoop() {
-  __run --dereference /tmp/driller/1/linkloop1
+  __run --dereference ${test_dir}/3/linkloop1
   assertEquals "error"            "Fatal: Symlink loop."      "$stderr"
   assertEquals "status"           "1"                         "$status"
 }
 
 function testFromOutsideLinkDirectory() {
-  cd /tmp/driller/
+  cd ${test_dir}/
 
-  __run --dereference ./1/absolute_symlink
+  __run --dereference ./3/absolute_symlink
   assertEquals "absolute"         "/dev/null"                 "$stdout"
 
-  __run --dereference ./2/relative_symlink
-  assertEquals "relative"         "/tmp/driller/1/"           "$stdout"
-}
-
-function oneTimeSetUp() {
-  pushd $(dirname $0) &> /dev/null
-  running_dir=$(pwd)
-  popd &> /dev/null
-  driller="${running_dir}/../driller"
-  stdout_file="/tmp/driller/stdout"
-  stderr_file="/tmp/driller/stderr"
-
-  mkdir -p /tmp/driller/1 /tmp/driller/2
-  touch    /tmp/driller/1/file
-  ln -s    /dev/null /tmp/driller/1/absolute_symlink
-  ln -s    /tmp/driller/1/absolute_symlink /tmp/driller/1/symlink_to_symlink
-  ln -s    /tmp/driller/1/linkloop2 /tmp/driller/1/linkloop1
-  ln -s    /tmp/driller/1/linkloop1 /tmp/driller/1/linkloop2
-
-  pushd /tmp/driller/2 &> /dev/null
-  ln -s ../1/ relative_symlink
-  popd &> /dev/null
+  __run --dereference ./3/relative_symlink
+  assertEquals "relative"         "${test_dir}/1/"           "$stdout"
 }
 
 # load and run shUnit2
