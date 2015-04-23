@@ -61,22 +61,7 @@ function __dereference() {
   path=$(readlink -- $1 || echo $1)
   path=$(${REAL_PATH} -- "${path}")
   popd &> /dev/null
-
-  #path=$(${REAL_PATH} -- "${path}")
   __decorate_path ${path}
-
-  #while [[ -L "${path}" ]]; do
-  #  #if [[ ${count} -gt 30 ]]; then
-  #  #  fatal "Symlink loop."
-  #  #else
-  #    path=$(readlink "${path}")
-  #    count=$(( ${count} + 1 ))
-  #  #fi
-  #done
-
-  #pushd "${working_dir}" > /dev/null
-  #__clean_path "${path}"
-  #popd > /dev/null
 }
 
 function __qualify_dot_dot_slashes() {
