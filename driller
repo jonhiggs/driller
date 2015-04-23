@@ -108,6 +108,7 @@ function __user_home() {
 }
 
 function __expand_tilde() {
+  # Expansion of ~ is usually done by your shell. This function does it too.
   path=$1
   user_section=$(echo ${path} | grep -o '^~[^\/]*')
   [[ -z ${user_section} ]] && echo ${path} && return 0
