@@ -64,28 +64,11 @@ function __dereference() {
   __decorate_path ${path}
 }
 
-function __set_trailing_slash() {
-  path=$1
-  if [[ "${path}" != "/" ]]; then
-    # strip slash before testing.
-    path=$(echo ${path} | sed -E 's#\/?$##')
-    if [[ -d "${path}" ]] && [[ ! -L "${path}" ]]; then
-      # make sure it has a trailing slash
-      path=$(echo ${path} | sed -E 's#\/?$#/#')
-    else
-      # make sure it does not have a trailing slash
-      path=$(echo ${path} | sed -E 's#\/?$##')
-    fi
-  fi
-  echo ${path}
-}
-
-
 function __clean_path() {
   path=$1
   path=$(__expand_tilde "${path}")
   path=$(__strip_extraneous_slashes "${path}")
-  path=$(__set_trailing_slash "${path}")
+  path=$(__decorate_path "${path}")
   echo ${path}
 }
 
