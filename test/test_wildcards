@@ -2,19 +2,19 @@
 source $(dirname $0)/functions.inc
 
 function testBasename() {
-  __run --basename /tmp/driller/1/fi*
+  __run --basename ${test_dir}/1/fi*
   assertEquals "one match"      "file"                      "$stdout"
 
-  __run --basename /tmp/driller/1/*
-  assertEquals "five matches"    "4"  "$(wc -w $stdout_file | awk '{print $1}')"
+  __run --basename ${test_dir}/1/*
+  assertEquals "three matches"    "3"  "$(wc -w $stdout_file | awk '{print $1}')"
 }
 
 function testAbsolute() {
-  __run --absolute /tmp/driller/1/fi*
-  assertEquals "one match"      "/tmp/driller/1/file"       "$stdout"
+  __run --absolute ${test_dir}/1/fi*
+  assertEquals "one match"      "${test_dir}/1/file"       "$stdout"
 
-  __run --absolute /tmp/driller/1/*
-  assertEquals "five matches"    "4"  "$(wc -w $stdout_file | awk '{print $1}')"
+  __run --absolute ${test_dir}/1/*
+  assertEquals "three matches"    "3"  "$(wc -w $stdout_file | awk '{print $1}')"
 }
 
 # load and run shUnit2
