@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 VERSION="v0.3.3"
-REAL_PATH=$(which realpath | which grealpath)
+REAL_PATH=$(which realpath || which grealpath)
 
 function usage() {
   cat <<EOF
