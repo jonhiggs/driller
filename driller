@@ -64,19 +64,6 @@ function __dereference() {
   __decorate_path ${path}
 }
 
-function __qualify_dot_dot_slashes() {
-  if [[ -d "${path}" ]] && [[ ! -L "${path}" ]]; then
-    dir=$1
-  else
-    dir=$(dirname -- "${path}")
-    file=$(basename -- "${path}")
-  fi
-
-  pushd "${dir}" &> /dev/null
-  echo $(pwd)/${file}
-  popd &> /dev/null
-}
-
 function __set_trailing_slash() {
   path=$1
   if [[ "${path}" != "/" ]]; then
@@ -97,7 +84,6 @@ function __set_trailing_slash() {
 function __clean_path() {
   path=$1
   path=$(__expand_tilde "${path}")
-  path=$(__qualify_dot_dot_slashes "${path}")
   path=$(__strip_extraneous_slashes "${path}")
   path=$(__set_trailing_slash "${path}")
   echo ${path}
