@@ -20,7 +20,7 @@ Nothing special...
 To install run the following commands in sequence.
 
 ```bash
-dest="/usr/local/sbin/driller"
+dest="/usr/local/bin/driller"
 tag="latest"
 sudo wget https://raw.githubusercontent.com/jonhiggs/driller/${tag}/driller -O "${dest}"
 chmod +x "${dest}"
