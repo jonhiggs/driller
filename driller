@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -e
 VERSION="v0.3.4"
-REAL_PATH=$(which realpath || which grealpath)
 
 function usage() {
   cat <<EOF
@@ -122,6 +121,8 @@ function __expand_tilde() {
 
   echo "$(__user_home ${user})${path_section}"
 }
+
+REAL_PATH=$(which realpath || which grealpath || fatal "realpath command not found")
 
 [[ -z $@ ]] && usage
 PATH_ARGS=""
