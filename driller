@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -e
-VERSION="v0.3.4"
+VERSION="v0.3.4.1"
 
 function usage() {
   cat <<EOF
